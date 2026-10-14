@@ -6,7 +6,7 @@
 
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -28,6 +28,8 @@ test("the build compiles, rewrites .ts imports, and every export loads in plain 
 	const out = mkdtempSync(join(tmpdir(), "chassis-build-"));
 	const tsc = join(root, "node_modules", "typescript", "bin", "tsc");
 	execFileSync(process.execPath, [tsc, "-p", join(root, "tsconfig.build.json"), "--outDir", out], { cwd: root, stdio: "pipe" });
+	// The peer packages (pi-tui for `api`) resolve from here, as they do next to a consumer's install.
+	symlinkSync(join(root, "node_modules"), join(out, "node_modules"), "dir");
 	for (const [name, target] of Object.entries<any>(pkg.exports)) {
 		if (name === "./package.json") continue;
 		const file = join(out, target.default.replace("./dist/", ""));
