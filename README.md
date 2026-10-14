@@ -117,7 +117,7 @@ export default function (pi: ExtensionAPI) {
   "type": "module",
   "keywords": ["pi-package"],
   "pi": { "extensions": ["./index.ts"] },
-  "dependencies": { "pi-chassis": "^0.2.0" }
+  "dependencies": { "pi-chassis": "^0.4.0" }
 }
 ```
 
@@ -273,7 +273,7 @@ import { registerBrand } from "pi-chassis/client";
 
 export default function (_pi: ExtensionAPI) {
 	registerBrand({
-		name: "Acme",                     // "<glyph> Acme pi 1.0.0"; omit for "<glyph> pi 1.0.0"
+		name: "Acme",                     // "<glyph> Acme pi 1.2.0"; omit for "<glyph> pi 1.2.0"
 		glyph: "A",                       // one cell; a private-use glyph (your own icon font) is shown as "●" when the user has plain icons
 		icons: "plain",                   // the icon set when the user has not chosen: "nerd" if your users have a Nerd Font
 		tagline: "Ship it",               // under the startup art; omit for none
