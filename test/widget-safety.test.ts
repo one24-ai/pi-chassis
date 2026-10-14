@@ -9,9 +9,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 
-process.env.PI_HALO_STATE = join(mkdtempSync(join(tmpdir(), "halo-")), "state.json");
+process.env.PI_CHASSIS_STATE = join(mkdtempSync(join(tmpdir(), "chassis-")), "state.json");
 
-const api = await import("../extensions/halo/api.ts");
+const api = await import("../extensions/chassis/api.ts");
 
 // Minimal ExtensionAPI: registerWidget only needs `on`.
 const pi = { on: () => {} } as any;

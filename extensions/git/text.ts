@@ -3,7 +3,7 @@
  * No I/O, so it is tested directly.
  */
 
-import { stripEscapes } from "../halo/sanitize.ts";
+import { stripEscapes } from "../chassis/sanitize.ts";
 
 export const MAX_DIFF_CHARS = 30_000;
 

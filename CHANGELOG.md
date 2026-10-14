@@ -1,8 +1,17 @@
 # Changelog
 
-All notable changes to pi-halo are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html); see [Versioning](README.md#versioning) for what counts as a breaking change here.
+All notable changes to pi-chassis (called pi-halo up to 0.3.0) are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html); see [Versioning](README.md#versioning) for what counts as a breaking change here.
 
 ## [Unreleased]
+
+### Changed
+
+- **Breaking:** pi-halo is now **pi-chassis**. Install `npm:pi-chassis` and import `pi-chassis/client` (and the other exports) instead of `pi-halo/...`. The commands are `/chassis` and `/chassis-resume-last`, the settings file is `~/.pi/agent/chassis.json`, the environment variables are `PI_CHASSIS_ICONS` and `PI_CHASSIS_STATE`, and the brand line reads `chassis X.Y.Z`. See [Moving from pi-halo](README.md#moving-from-pi-halo).
+
+### Deprecated
+
+- The pi-halo names still work for now: `/halo` and `/halo-resume-last` run the new commands, `PI_HALO_ICONS` and `PI_HALO_STATE` are read when the new variables are unset, and `halo.json` is copied to `chassis.json` the first time. The `globalThis` keys (`Symbol.for("pi-halo/...")`, `halo.plainMessageTypes`) and the custom entry types in session files keep their names on purpose and are not deprecated.
+- The `pi-halo` package on npm becomes a bridge that installs and loads pi-chassis (see `compat/pi-halo`).
 
 ## [0.3.0] - 2026-10-08
 

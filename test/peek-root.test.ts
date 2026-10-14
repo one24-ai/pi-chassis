@@ -1,11 +1,11 @@
 /**
- * The thinking peek must find pi's assistant message even when halo's sidebar split wraps the
+ * The thinking peek must find pi's assistant message even when chassis's sidebar split wraps the
  * layout root: `tui.layoutRoot` is then a plain object and pi's real root hangs off it under a symbol.
  */
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { ThinkingPeek } from "../extensions/halo/peek.ts";
+import { ThinkingPeek } from "../extensions/chassis/peek.ts";
 
 const ORIGINAL = Symbol.for("pi-halo/original-root");
 

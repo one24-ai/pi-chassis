@@ -1,0 +1,77 @@
+{
+  "name": "pi-halo",
+  "version": "0.0.0",
+  "description": "pi-halo is now pi-chassis. This package installs pi-chassis and loads it, so existing installs keep working. Install npm:pi-chassis instead.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Zach Koncir <zach@one24.ai>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/one24-ai/pi-chassis.git",
+    "directory": "compat/pi-halo"
+  },
+  "homepage": "https://github.com/one24-ai/pi-chassis#moving-from-pi-halo",
+  "keywords": [
+    "pi-package",
+    "pi",
+    "pi-coding-agent"
+  ],
+  "exports": {
+    "./client": {
+      "types": "./client.d.ts",
+      "default": "./client.js"
+    },
+    "./api": {
+      "types": "./api.d.ts",
+      "default": "./api.js"
+    },
+    "./brand": {
+      "types": "./brand.d.ts",
+      "default": "./brand.js"
+    },
+    "./icons": {
+      "types": "./icons.d.ts",
+      "default": "./icons.js"
+    },
+    "./aws": {
+      "types": "./aws.d.ts",
+      "default": "./aws.js"
+    },
+    "./provider": {
+      "types": "./provider.d.ts",
+      "default": "./provider.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "pi-chassis": "0.0.0"
+  },
+  "bundleDependencies": [
+    "pi-chassis"
+  ],
+  "files": [
+    "*.js",
+    "*.d.ts",
+    "README.md"
+  ],
+  "pi": {
+    "extensions": [
+      "node_modules/pi-chassis/extensions/chassis/index.ts",
+      "node_modules/pi-chassis/extensions/widgets/container/index.ts",
+      "node_modules/pi-chassis/extensions/widgets/aws/index.ts",
+      "node_modules/pi-chassis/extensions/widgets/mcp/index.ts",
+      "node_modules/pi-chassis/extensions/widgets/todo/index.ts",
+      "node_modules/pi-chassis/extensions/widgets/session-todos/index.ts",
+      "node_modules/pi-chassis/extensions/widgets/subagents/index.ts",
+      "node_modules/pi-chassis/extensions/diff/index.ts",
+      "node_modules/pi-chassis/extensions/git/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=1.1.0 <1.2.0",
+    "@earendil-works/pi-tui": ">=1.1.0 <1.2.0"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  }
+}

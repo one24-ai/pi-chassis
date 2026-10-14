@@ -2,10 +2,10 @@
  * Brand: the few things that make the TUI look like a particular product: the mark shown next to
  * the version, the startup art and tagline, and the accent colours of the chrome.
  *
- * halo ships a neutral default. A separate package layers its own identity on top by calling
+ * chassis ships a neutral default. A separate package layers its own identity on top by calling
  * `registerBrand()` from client.ts:
  *
- *     import { registerBrand } from "pi-halo/client";
+ *     import { registerBrand } from "pi-chassis/client";
  *     export default function () {
  *       registerBrand({ name: "Acme", glyph: "A", colors: { primary: "#E4572E" } });
  *     }
@@ -40,7 +40,7 @@ export interface BrandSurfaces {
 
 /**
  * `surfaces` are for dark themes, and `lightSurfaces` for light ones (a theme says which it is with
- * its `appearance`). Text that halo draws in a brand colour is darkened on a light surface until
+ * its `appearance`). Text that chassis draws in a brand colour is darkened on a light surface until
  * it can be read; rails, bars and the mode pill keep the brand colour exactly.
  */
 

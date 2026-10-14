@@ -7,10 +7,10 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { alert, alertTitle, DEFAULT_ALERT_SECONDS, defaultAlert, describeAlert, loadAlert, parseAlertArg, plainTitle, runOutcome, saveAlert, shouldAlert } from "../extensions/halo/alert.ts";
-import { homeRelative, lastSep } from "../extensions/halo/palette.ts";
+import { alert, alertTitle, DEFAULT_ALERT_SECONDS, defaultAlert, describeAlert, loadAlert, parseAlertArg, plainTitle, runOutcome, saveAlert, shouldAlert } from "../extensions/chassis/alert.ts";
+import { homeRelative, lastSep } from "../extensions/chassis/palette.ts";
 
-const dir = mkdtempSync(join(tmpdir(), "halo-alert-"));
+const dir = mkdtempSync(join(tmpdir(), "chassis-alert-"));
 
 test("shouldAlert: only when on and the run lasted the threshold", () => {
 	const s = { enabled: true, seconds: 30 };

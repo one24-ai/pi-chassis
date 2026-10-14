@@ -2,7 +2,7 @@
  * Turn telemetry (TPS, TTFT, duration, tokens, stalls, cost rate) shown after each agent run.
  *
  * Adapted from pi-open-tui's telemetry.ts (MIT, Copyright (c) 2026 pi-open-tui contributors;
- * see THIRD_PARTY_NOTICES). Formatting changed to match halo.
+ * see THIRD_PARTY_NOTICES). Formatting changed to match chassis.
  */
 
 import type { Theme } from "@earendil-works/pi-coding-agent";

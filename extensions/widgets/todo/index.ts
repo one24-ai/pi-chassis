@@ -12,9 +12,9 @@
 
 import { statSync } from "node:fs";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { registerWidget } from "../../halo/api.ts";
-import { ICONS } from "../../halo/icons.ts";
-import { sanitize } from "../../halo/palette.ts";
+import { registerWidget } from "../../chassis/api.ts";
+import { ICONS } from "../../chassis/icons.ts";
+import { sanitize } from "../../chassis/palette.ts";
 import { findTodoFile, readTodos } from "./parse.ts";
 
 const POLL_MS = 5_000;

@@ -1,10 +1,10 @@
-# pi-halo
+# pi-chassis
 
 A workbench for [pi](https://pi.dev): an interface, git workflows and a widget platform for everyday engineering. It adds a sidebar and home screen, Build and Plan modes, a git diff view, and git commands that draft commit messages and pull requests for you. The brand (name, mark, colours, startup art) is a replaceable layer: see [Branding](#branding).
 
 Requires pi 1.1 and Node.js 22.19 or later.
 
-- **Home screen**: until the first message, the pi logo, the prompt (75 columns, with an `Ask anything…` placeholder and a blinking cursor), a random tip, and a bottom bar with the brand, the pi and halo versions, the directory and branch, MCP count, and the last session here (`ctrl+x r` resumes it). Fullscreen mode only.
+- **Home screen**: until the first message, the pi logo, the prompt (75 columns, with an `Ask anything…` placeholder and a blinking cursor), a random tip, and a bottom bar with the brand, the pi and chassis versions, the directory and branch, MCP count, and the last session here (`ctrl+x r` resumes it). Fullscreen mode only.
 - **Sidebar** on the right with session title, context and cost, status widgets and todos. `ctrl+x b` toggles it.
 - **Footer**: one line with cwd, git, widgets, other extensions' statuses, context % and cost.
 - **Prompt**: a left rail in the mode colour, with a `BUILD` / `PLAN` badge and the model.
@@ -19,18 +19,34 @@ Requires pi 1.1 and Node.js 22.19 or later.
 ## Install
 
 ```bash
-pi install npm:pi-halo@0.1.0                        # from npm, pinned
-pi install git:github.com/one24-ai/pi-halo@v0.1.0   # from git, pinned to a tag
-pi install /path/to/pi-halo                         # a local checkout
+pi install npm:pi-chassis@0.4.0                        # from npm, pinned
+pi install git:github.com/one24-ai/pi-chassis@v0.4.0   # from git, pinned to a tag
+pi install /path/to/pi-chassis                         # a local checkout
 ```
 
 Pin a version: pi keeps a pinned npm version or git tag until you change it, so an update never arrives by surprise. See the [changelog](CHANGELOG.md) before moving to a new one.
 
-pi-halo replaces pi's header, footer and editor, so it does not combine with another package that replaces any of them (pi-open-tui is one): keep only one such package in `packages`.
+pi-chassis replaces pi's header, footer and editor, so it does not combine with another package that replaces any of them (pi-open-tui is one): keep only one such package in `packages`.
 
-**Icons.** pi-halo draws with plain characters by default (`● ○ ▲ × • → ↑ ↓` and half-block pill caps), which every common monospace font has, so it works in any terminal. With a [Nerd Font](https://www.nerdfonts.com) in the terminal it can draw real icons instead (a robot, a branch, a file, a clock, round pill caps). Switch with `/halo icons nerd|plain|auto`; `auto` forgets the choice. The setting is saved in `halo.json`, and the `PI_HALO_ICONS=nerd|plain` environment variable overrides it. A brand can set the default for its users with `icons: "nerd"` (see Branding). The plain set takes the same number of cells as the Nerd one, so nothing moves when you switch. Where a Nerd icon is only decoration (telemetry, the mode pill, the diff header) the plain set shows the words alone.
+**Icons.** pi-chassis draws with plain characters by default (`● ○ ▲ × • → ↑ ↓` and half-block pill caps), which every common monospace font has, so it works in any terminal. With a [Nerd Font](https://www.nerdfonts.com) in the terminal it can draw real icons instead (a robot, a branch, a file, a clock, round pill caps). Switch with `/chassis icons nerd|plain|auto`; `auto` forgets the choice. The setting is saved in `chassis.json`, and the `PI_CHASSIS_ICONS=nerd|plain` environment variable overrides it. A brand can set the default for its users with `icons: "nerd"` (see Branding). The plain set takes the same number of cells as the Nerd one, so nothing moves when you switch. Where a Nerd icon is only decoration (telemetry, the mode pill, the diff header) the plain set shows the words alone.
 
-pi-halo ships no theme. It works with any pi theme; the brand only supplies the mark colour, the plan-mode colour and two surface shades (see Branding).
+pi-chassis ships no theme. It works with any pi theme; the brand only supplies the mark colour, the plan-mode colour and two surface shades (see Branding).
+
+## Moving from pi-halo
+
+pi-chassis was called pi-halo up to 0.3.0. To switch:
+
+```bash
+pi remove npm:pi-halo
+pi install npm:pi-chassis@0.4.0
+```
+
+- Your settings carry over: the first time pi-chassis starts and finds `~/.pi/agent/halo.json` but no `chassis.json`, it copies it. `halo.json` is left in place.
+- `/halo` and `/halo-resume-last` still work and do the same as `/chassis` and `/chassis-resume-last`.
+- `PI_HALO_ICONS` and `PI_HALO_STATE` still work when `PI_CHASSIS_ICONS` and `PI_CHASSIS_STATE` are unset.
+- A package that imports `pi-halo/client` (or `api`, `brand`, `icons`, `provider`, `aws`) changes the import to `pi-chassis/...`. The exports are the same.
+- Packages that talk to it through `globalThis` change nothing: the keys keep their `pi-halo/` names (`Symbol.for("pi-halo/registry")` and the rest, and `halo.plainMessageTypes`), so a package built against pi-halo works with pi-chassis and the other way round. Sessions saved under pi-halo keep their Build/Plan colours for the same reason.
+- `pi-halo` 0.4.0 and later on npm is a thin package that installs pi-chassis and loads it, so an existing install keeps working after `pi update`. Do not install both: remove `pi-halo` when you add `pi-chassis`.
 
 ## Keys
 
@@ -47,9 +63,9 @@ pi-halo ships no theme. It works with any pi theme; the brand only supplies the 
 
 `ctrl+p` replaces pi's default "cycle model" binding inside the prompt. Pick models with `ctrl+x m` or `ctrl+l`.
 
-`/halo [on|off|sidebar|status|alert|icons]` turns the TUI off for a session, toggles the sidebar, or reports the layout and the registered widgets.
+`/chassis [on|off|sidebar|status|alert|icons]` turns the TUI off for a session, toggles the sidebar, or reports the layout and the registered widgets.
 
-**Finish alert.** When a run that lasted at least 30 seconds ends, fails, or stops to wait for you (a confirmation prompt), halo rings the terminal bell and puts a mark in the window title (`✓`, `✗` or `?` in front of pi's title), so you notice from another window. The mark clears on your next prompt. A run you abort with `esc` never rings. It writes only a BEL character and the standard title escape, with no OS commands, so what you see (a taskbar flash, a tab badge, a sound, or nothing) is your terminal's bell setting. `/halo alert` shows the setting, `/halo alert off|on` switches it, and `/halo alert 90` (or `45s`, `2m`) sets the threshold. It is saved in `halo.json` next to the disabled widgets.
+**Finish alert.** When a run that lasted at least 30 seconds ends, fails, or stops to wait for you (a confirmation prompt), chassis rings the terminal bell and puts a mark in the window title (`✓`, `✗` or `?` in front of pi's title), so you notice from another window. The mark clears on your next prompt. A run you abort with `esc` never rings. It writes only a BEL character and the standard title escape, with no OS commands, so what you see (a taskbar flash, a tab badge, a sound, or nothing) is your terminal's bell setting. `/chassis alert` shows the setting, `/chassis alert off|on` switches it, and `/chassis alert 90` (or `45s`, `2m`) sets the threshold. It is saved in `chassis.json` next to the disabled widgets.
 
 ## Git workflows
 
@@ -65,16 +81,16 @@ Slash commands for the git chores you do every day. None of them needs you to ex
 
 It is plain git and works with any remote. `/pr` uses the forge's own CLI, so it works with any host that CLI is signed in to: [`gh`](https://cli.github.com) for GitHub and GitHub Enterprise, [`glab`](https://gitlab.com/gitlab-org/cli) for GitLab. Run `gh auth login` (or `glab auth login`) once.
 
-Safe by construction: git runs with argument lists, never through a shell, with no terminal of its own, so a password, ssh passphrase or gpg prompt cannot draw over pi's screen: it fails at once with a hint to sign in first (credential helper, ssh-agent or gpg-agent) and you try again; output from git, hooks and `gh` is stripped of escape sequences before it is shown; nothing force-pushes, skips hooks (`--no-verify`) or resets hard; a failing hook or push shows git's own output and leaves the repository as git left it; and everything that publishes or merges asks first. The model is the one you have selected. If it can't answer, you write the message yourself. `/git off` switches all of these commands off and `/git on` restores them. The choice is saved in `halo.json` and applies to every running session at once. Like any slash command they are listed in the command palette (`ctrl+p`). They need the interactive UI, because they ask before they change anything; in print or JSON mode they say so on stderr and do nothing.
+Safe by construction: git runs with argument lists, never through a shell, with no terminal of its own, so a password, ssh passphrase or gpg prompt cannot draw over pi's screen: it fails at once with a hint to sign in first (credential helper, ssh-agent or gpg-agent) and you try again; output from git, hooks and `gh` is stripped of escape sequences before it is shown; nothing force-pushes, skips hooks (`--no-verify`) or resets hard; a failing hook or push shows git's own output and leaves the repository as git left it; and everything that publishes or merges asks first. The model is the one you have selected. If it can't answer, you write the message yourself. `/git off` switches all of these commands off and `/git on` restores them. The choice is saved in `chassis.json` and applies to every running session at once. Like any slash command they are listed in the command palette (`ctrl+p`). They need the interactive UI, because they ask before they change anything; in print or JSON mode they say so on stderr and do nothing.
 
 ## Adding a widget
 
 A widget is one call. It can show in the footer, the sidebar, or both:
 
 ```ts
-// my-widget/index.ts, in a pi package that depends on pi-halo (see below)
+// my-widget/index.ts, in a pi package that depends on pi-chassis (see below)
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { registerWidget } from "pi-halo/client";
+import { registerWidget } from "pi-chassis/client";
 
 export default function (pi: ExtensionAPI) {
 	let count = 0;
@@ -93,7 +109,7 @@ export default function (pi: ExtensionAPI) {
 }
 ```
 
-`pi-halo/client` is resolved like any npm import, from the widget's own folder, so the widget lives in a pi package that has pi-halo in its `node_modules`. A single file in `~/.pi/agent/extensions/` can't import it. The exports are compiled JavaScript with type declarations, so the package's own tests can import them with plain `node --test` and type-check with `tsc`. A minimal package:
+`pi-chassis/client` is resolved like any npm import, from the widget's own folder, so the widget lives in a pi package that has pi-chassis in its `node_modules`. A single file in `~/.pi/agent/extensions/` can't import it. The exports are compiled JavaScript with type declarations, so the package's own tests can import them with plain `node --test` and type-check with `tsc`. A minimal package:
 
 ```json
 {
@@ -101,13 +117,13 @@ export default function (pi: ExtensionAPI) {
   "type": "module",
   "keywords": ["pi-package"],
   "pi": { "extensions": ["./index.ts"] },
-  "dependencies": { "pi-halo": "^0.2.0" }
+  "dependencies": { "pi-chassis": "^0.2.0" }
 }
 ```
 
 Install its dependencies (`pnpm install`), then `pi install /path/to/my-widget`.
 
-- Widgets in other extensions should import `client.ts`, not `api.ts`. A package that cannot depend on pi-halo registers through `globalThis` instead (see [Adding a widget without depending on pi-halo](#adding-a-widget-without-depending-on-pi-halo)). It only looks for halo on `globalThis`, so load order doesn't matter: a widget that registers before halo loads is queued and taken over when it does. Without halo installed, the widget falls back to a plain `ctx.ui.setStatus(id, "<icon> <label or title> <text>")` line, polled on `refreshMs` (no detail lines, colours or caching). It also checks the registry's `apiVersion`, so a halo with an older API is ignored rather than called wrongly. The package exports `./client`, `./api`, `./brand`, `./icons`, `./provider` and `./aws` for use from another package (`./icons` has `iconSet`, `safeGlyph` and the glyph table, for a brand or widget that wants to match the user's icon choice). Built-in widgets in this repo keep importing `api.ts`.
+- Widgets in other extensions should import `client.ts`, not `api.ts`. A package that cannot depend on pi-chassis registers through `globalThis` instead (see [Adding a widget without depending on pi-chassis](#adding-a-widget-without-depending-on-pi-chassis)). It only looks for chassis on `globalThis`, so load order doesn't matter: a widget that registers before chassis loads is queued and taken over when it does. Without chassis installed, the widget falls back to a plain `ctx.ui.setStatus(id, "<icon> <label or title> <text>")` line, polled on `refreshMs` (no detail lines, colours or caching). It also checks the registry's `apiVersion`, so a chassis with an older API is ignored rather than called wrongly. The package exports `./client`, `./api`, `./brand`, `./icons`, `./provider` and `./aws` for use from another package (`./icons` has `iconSet`, `safeGlyph` and the glyph table, for a brand or widget that wants to match the user's icon choice). Built-in widgets in this repo keep importing `api.ts`.
 - An `icon` (on the widget or in the view) is either one string, used as given with a Nerd Font and dropped without one, or `{ nerd, plain }` to give one for each set. A string of ordinary characters such as `"CI"` survives in both. With no icon in the current set, a row shows its level marker or the bullet, and a section heading shows no glyph.
 - `render` returns `{ icon?, label?, text, color?, level? }`, or `undefined` to hide the widget. In the sidebar's status list a `level` shows as a marker: a check (`ok`), warning triangle (`warn`), cross (`error`), minus (`off`) or information circle (`info`), in that level's colour. `label` is shown only in the footer, because the sidebar uses `title` instead.
 - `color` takes theme tokens (`text`, `muted`, `accent`, `success`, `warning`, `error`) the brand colours (`brand`, `brandDark`, `plan`), or any `#RRGGBB` value. If omitted, `level` (`ok`, `warn`, `error`, `off`, `info`) picks the colour.
@@ -116,7 +132,7 @@ Install its dependencies (`pnpm install`), then `pi install /path/to/my-widget`.
 - `actions: [{ id, label, description?, run(ctx) }]` adds entries to the ctrl+p palette, shown as "<title>: <label>". They are hidden while the widget is disabled or suspended. A thrown error is shown as a notification and recorded on the widget.
 - `onDetailClick(index, ctx)` makes the lines `detail` returns clickable in the sidebar (left click; the heading, error lines and rows cut off on a short terminal are not). Only the sidebar leaf handles the mouse, so moving the pointer over it costs nothing. A thrown error is shown as a notification and recorded on the widget.
 - A `sidebar: "section"` widget with only detail lines can return `{}` from `render`: `text` is optional.
-- `/widgets [list|disable ID|enable ID|refresh ID]` shows each widget's state and switches one off. The disabled list is saved in `~/.pi/agent/halo.json`.
+- `/widgets [list|disable ID|enable ID|refresh ID]` shows each widget's state and switches one off. The disabled list is saved in `~/.pi/agent/chassis.json`.
 - `registerWidget` returns a handle. `refresh()` re-renders on demand, for example from a `pi.events` listener, and `dispose()` removes the widget.
 - `sidebar: "section"` gives a widget its own sidebar section (bold title, value beside it, detail lines as the body) instead of a row in the status list. The `todo` widget uses it. Its optional `icon` goes in front of the title; on a row widget it is the row's marker instead of the bullet (the AWS widget shows the AWS logo there).
 - Plain `ctx.ui.setStatus(key, text)` from any extension still shows in the footer. A widget whose `id` (or `statusKey`) matches a status key replaces that status, so it doesn't show twice; `statusKeys: [...]` claims several more. The Subagents widget uses it for pi-subagents' slash-command statuses.
@@ -126,24 +142,24 @@ Install its dependencies (`pnpm install`), then `pi install /path/to/my-widget`.
 | Widget | Shows |
 |---|---|
 | `container` | The container, devcontainer or pod name when pi runs inside one |
-| `aws` | AWS account, role and region from env and `~/.aws/config`. The role is green when its name reads read-only and bold in the warning colour when it reads admin or power-user. An extension that changes the AWS env can emit `aws-status:refresh`. Credential tools can be taught with `registerCredentialProcessResolver` (`pi-halo/aws`) |
+| `aws` | AWS account, role and region from env and `~/.aws/config`. The role is green when its name reads read-only and bold in the warning colour when it reads admin or power-user. An extension that changes the AWS env can emit `aws-status:refresh`. Credential tools can be taught with `registerCredentialProcessResolver` (`pi-chassis/aws`) |
 | `mcp` | Connected/enabled MCP servers, and which ones are pending |
 | `todo` | Open items from the repo's `TODO.md` (or `TODO`, `TODO.txt`), sidebar only, hidden when there's none |
 | `session-todos` | The latest todo list a todo-style tool reported in this session, sidebar only, hidden when nothing is open |
 | `subagents` | pi-subagents children for this session (see below), hidden until one runs. Running children show their model and token count, and a last line shows spawned-of-cap and the parallel limit |
 
-### Adding a widget without depending on pi-halo
+### Adding a widget without depending on pi-chassis
 
-A package that should work with or without halo, and that does not want a dependency on it, can register through `globalThis` alone. This is the whole protocol; `pi-halo/client` is a typed wrapper around it (and adds the plain `setStatus` fallback).
+A package that should work with or without chassis, and that does not want a dependency on it, can register through `globalThis` alone. This is the whole protocol; `pi-chassis/client` is a typed wrapper around it (and adds the plain `setStatus` fallback).
 
-- The registry is `globalThis[Symbol.for("pi-halo/registry")]`. It exists once halo has loaded (and may exist earlier, created by another package that imports halo's `api`), so check the fields, not just the object.
+- The registry is `globalThis[Symbol.for("pi-halo/registry")]`. It exists once chassis has loaded (and may exist earlier, created by another package that imports chassis's `api`), so check the fields, not just the object.
 - `apiVersion` (a number) is the widget API version, 1 today. It changes only when `WidgetSpec` or the registry break. Use the registry only when `typeof registry.register === "function"` and `registry.apiVersion >= 1`.
 - `register(pi, spec, ctx?)` registers or replaces the widget with that `id` and returns `{ refresh(), dispose() }`. `spec` is the `WidgetSpec` described above.
-- Register from your `session_start` handler. By then every extension has loaded, so a missing registry means halo is not installed: show nothing (or your own `ctx.ui.setStatus`). pi collects the handlers for an event before it calls any of them, so the `session_start` listeners that `register` adds for the widget's timers miss the event that is already running; pass the handler's `ctx` as the third argument and halo uses it for the widget's first `update` and its timer. Registering again on a later `session_start` replaces the widget.
+- Register from your `session_start` handler. By then every extension has loaded, so a missing registry means chassis is not installed: show nothing (or your own `ctx.ui.setStatus`). pi collects the handlers for an event before it calls any of them, so the `session_start` listeners that `register` adds for the widget's timers miss the event that is already running; pass the handler's `ctx` as the third argument and chassis uses it for the widget's first `update` and its timer. Registering again on a later `session_start` replaces the widget.
 - Everything the widget returns is cleaned of escape sequences and control characters before it is drawn, as for any widget.
 
 ```ts
-// A pi package with no dependency on pi-halo: a "Memory" sidebar section.
+// A pi package with no dependency on pi-chassis: a "Memory" sidebar section.
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 export default function (pi: ExtensionAPI) {
@@ -152,7 +168,7 @@ export default function (pi: ExtensionAPI) {
 
   pi.on("session_start", async (_event, ctx) => {
     const host = (globalThis as any)[Symbol.for("pi-halo/registry")];
-    if (typeof host?.register !== "function" || !(host.apiVersion >= 1)) return; // halo is absent: show nothing
+    if (typeof host?.register !== "function" || !(host.apiVersion >= 1)) return; // chassis is absent: show nothing
 
     host.register(
       pi,
@@ -181,10 +197,10 @@ A widget that is not a status of its own, only detail lines, can return `{}` fro
 
 ### Tool rows for your extension's tools
 
-halo draws pi's built-in tools (read, write, edit, bash, grep, find, ls) as one-line rows. It knows no other tool by name. An extension can have its own tools drawn the same way by registering a row spec per tool name:
+chassis draws pi's built-in tools (read, write, edit, bash, grep, find, ls) as one-line rows. It knows no other tool by name. An extension can have its own tools drawn the same way by registering a row spec per tool name:
 
 ```ts
-import { registerToolRows } from "pi-halo/client";
+import { registerToolRows } from "pi-chassis/client";
 
 const off = registerToolRows(
   {
@@ -214,26 +230,26 @@ interface ToolRowSpec {
 interface ToolRowResult { content?: Array<{ type: string; text?: string }>; details?: any }
 type ToolRowSpecs = Record<string /* tool name */, ToolRowSpec>;
 interface ToolRowsOptions { id?: string }
-function registerToolRows(specs: ToolRowSpecs, options?: ToolRowsOptions): () => void; // pi-halo/client
+function registerToolRows(specs: ToolRowSpecs, options?: ToolRowsOptions): () => void; // pi-chassis/client
 ```
 
 - `args` and `result` come from the model and the tool, and a call is drawn while its arguments are still arriving, so a spec reads them defensively (`args?.query`).
 - Every string a spec returns is treated as untrusted: escape sequences, control characters and bidi controls are removed and line breaks become spaces. Colour from `theme` is kept. `expand` lines are indented and cut at 120 (only the lines that can be shown are cleaned; the "N more lines" note counts all of them).
 - An entry is used only if `title` is a string, `describe` and `summarize` are functions, and `expand` is a function when given. Any other entry is skipped and the rest of the group still registers.
-- A spec that throws costs only that frame: it is drawn by the tool's own renderers instead, and when the tool has none, by pi's plain fallback. A throw while the call's arguments or output are still arriving is not held against the call (the next frame tries the spec again). A throw on a finished call latches: the rest of that call uses the tool's own renderers. After a spec has failed on three finished calls, new calls skip it, so the tool is drawn entirely by its own renderers; registering the spec again gives it a fresh start. Limit: pi reads a tool's `renderShell` once, when it creates the row, so a call that falls back after it started stays inside halo's shell (no padding or background of the tool's own); only a call created after the spec is known to be broken gets the tool's own shell.
+- A spec that throws costs only that frame: it is drawn by the tool's own renderers instead, and when the tool has none, by pi's plain fallback. A throw while the call's arguments or output are still arriving is not held against the call (the next frame tries the spec again). A throw on a finished call latches: the rest of that call uses the tool's own renderers. After a spec has failed on three finished calls, new calls skip it, so the tool is drawn entirely by its own renderers; registering the spec again gives it a fresh start. Limit: pi reads a tool's `renderShell` once, when it creates the row, so a call that falls back after it started stays inside chassis's shell (no padding or background of the tool's own); only a call created after the spec is known to be broken gets the tool's own shell.
 - Registering again: a package that registers on every `session_start`, or that /reload loads again, passes an `id` (`registerToolRows(specs, { id: "my-package" })`), and registering with the same id replaces its earlier group instead of piling up another. Without an `id`, keep the returned remover and call it (for example on `session_shutdown`) before registering again, or each call adds a group that lives until the process ends.
-- Order does not matter. The spec is looked up when a call is drawn, so the tool's extension, the extension registering the rows and halo can load in any order, and rows registered before halo loads are queued and taken over when it does. A call already on screen keeps the renderer it started with. With halo absent, `registerToolRows` does nothing and the tools keep their own rows.
-- halo's own rows for the built-in tools always win: a spec registered under one of those names is ignored. For any other name the most recent registration wins, and removing it brings back the one before.
-- Dependency-free: `globalThis[Symbol.for("pi-halo/registry")]` has `toolRowsVersion` (a number, 1 today, raised only when `registerToolRows` or `ToolRowSpec` break) and `registerToolRows(specs, { id }?)`, which returns the remover. When `typeof registry.registerToolRows === "function"` and `registry.toolRowsVersion >= 1`, call it. Otherwise halo has not loaded yet (or is too old): push `{ specs, id, attach(remove) {} }` (`id` optional, as above) onto the array at `globalThis[Symbol.for("pi-halo/pendingToolRows")]` (create it with `[]` if it is missing) and halo registers it when it loads, calling `attach` with the remover. A package that wants to react to halo being absent checks at `session_start`, when every extension has loaded.
+- Order does not matter. The spec is looked up when a call is drawn, so the tool's extension, the extension registering the rows and chassis can load in any order, and rows registered before chassis loads are queued and taken over when it does. A call already on screen keeps the renderer it started with. With chassis absent, `registerToolRows` does nothing and the tools keep their own rows.
+- chassis's own rows for the built-in tools always win: a spec registered under one of those names is ignored. For any other name the most recent registration wins, and removing it brings back the one before.
+- Dependency-free: `globalThis[Symbol.for("pi-halo/registry")]` has `toolRowsVersion` (a number, 1 today, raised only when `registerToolRows` or `ToolRowSpec` break) and `registerToolRows(specs, { id }?)`, which returns the remover. When `typeof registry.registerToolRows === "function"` and `registry.toolRowsVersion >= 1`, call it. Otherwise chassis has not loaded yet (or is too old): push `{ specs, id, attach(remove) {} }` (`id` optional, as above) onto the array at `globalThis[Symbol.for("pi-halo/pendingToolRows")]` (create it with `[]` if it is missing) and chassis registers it when it loads, calling `attach` with the remover. A package that wants to react to chassis being absent checks at `session_start`, when every extension has loaded.
 
-Message types that draw a plain row of their own (no panel or bar from halo) are added the same way, through the shared set at `globalThis[Symbol.for("halo.plainMessageTypes")]`.
+Message types that draw a plain row of their own (no panel or bar from chassis) are added the same way, through the shared set at `globalThis[Symbol.for("halo.plainMessageTypes")]`.
 
 ### Diff view API
 
-Other extensions can show their own diff in the panel and add actions to it (`a` opens the menu). An action runs after the panel has closed, with the file and hunk under the cursor and the file's patch, so halo shows the diff and leaves what to do with it to you:
+Other extensions can show their own diff in the panel and add actions to it (`a` opens the menu). An action runs after the panel has closed, with the file and hunk under the cursor and the file's patch, so chassis shows the diff and leaves what to do with it to you:
 
 ```ts
-import { addDiffAction, openChanges, openDiff } from "pi-halo/client";
+import { addDiffAction, openChanges, openDiff } from "pi-chassis/client";
 
 addDiffAction({
   id: "review-hunk",
@@ -245,7 +261,7 @@ const shown = await openDiff(ctx, { title: "Proposed change", diff: unifiedDiffT
 const opened = await openChanges(ctx, "src/api.ts"); // the git changes view with that file selected (same result)
 ```
 
-Both work whichever package loads first, and neither needs halo's registry.
+Both work whichever package loads first, and neither needs chassis's registry.
 
 ## Branding
 
@@ -253,7 +269,7 @@ The brand is one small object, set by calling `registerBrand` from any extension
 
 ```ts
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { registerBrand } from "pi-halo/client";
+import { registerBrand } from "pi-chassis/client";
 
 export default function (_pi: ExtensionAPI) {
 	registerBrand({
@@ -269,16 +285,16 @@ export default function (_pi: ExtensionAPI) {
 }
 ```
 
-Every field is optional and merges onto the defaults (a neutral blue, the pi logo, no name or tagline). The brand lives on `globalThis`, so it doesn't matter which package loads first, and `registerBrand` returns a function that puts the previous brand back. Pick `surfaces` (and `lightSurfaces`, if your package has a light theme) to match your theme's `userMessageBg` and `toolSuccessBg`, so pi's own blocks and halo's agree. Under a light theme halo uses `lightSurfaces` and darkens the brand colours it draws as text until they reach 4.5:1 contrast on them; rails, bars and the mode pill keep the brand colour exactly, and a dark theme is untouched. A glyph from a patched font is fine as long as your users have that font; otherwise use a plain character.
+Every field is optional and merges onto the defaults (a neutral blue, the pi logo, no name or tagline). The brand lives on `globalThis`, so it doesn't matter which package loads first, and `registerBrand` returns a function that puts the previous brand back. Pick `surfaces` (and `lightSurfaces`, if your package has a light theme) to match your theme's `userMessageBg` and `toolSuccessBg`, so pi's own blocks and chassis's agree. Under a light theme chassis uses `lightSurfaces` and darkens the brand colours it draws as text until they reach 4.5:1 contrast on them; rails, bars and the mode pill keep the brand colour exactly, and a dark theme is untouched. A glyph from a patched font is fine as long as your users have that font; otherwise use a plain character.
 
-A brand package is an ordinary pi package with an extension (the `registerBrand` call), and usually a theme. Install it next to halo; nothing in halo needs to know it exists. The same package can hold widgets that only make sense for its users.
+A brand package is an ordinary pi package with an extension (the `registerBrand` call), and usually a theme. Install it next to chassis; nothing in chassis needs to know it exists. The same package can hold widgets that only make sense for its users.
 
 ## Provider status
 
 The sidebar's provider section shows the provider's name (as registered with pi), the model, context use, tokens and cost for any provider, with no setup. A provider that publishes its plan usage as a `setStatus("<provider>-usage", "... 71%")` line gets a Plan bar automatically (and the figure in the footer when the sidebar is hidden). Any other provider can add its own bars, such as how much of a plan or quota is used, with `registerProviderStatus`:
 
 ```ts
-import { registerProviderStatus } from "pi-halo/client";
+import { registerProviderStatus } from "pi-chassis/client";
 
 // The provider already publishes a percentage with ctx.ui.setStatus("acme-usage", "Acme 71%"):
 registerProviderStatus({ provider: "acme", name: "Acme", color: "plan", statusKey: "acme-usage", label: "Plan" });
@@ -305,7 +321,7 @@ The section reads pi-subagents' public `status` RPC only, so it keeps working as
 
 ## How the sidebar works
 
-pi has no extension API for a side panel. In fullscreen mode (`"tuiMode": "fullscreen"`), pi renders one layout root, a vertical stack of transcript plus input. pi-halo wraps that root in a horizontal stack with the sidebar as a fixed 48-column right column, using pi-tui's `setLayoutRoot()`.
+pi has no extension API for a side panel. In fullscreen mode (`"tuiMode": "fullscreen"`), pi renders one layout root, a vertical stack of transcript plus input. pi-chassis wraps that root in a horizontal stack with the sidebar as a fixed 48-column right column, using pi-tui's `setLayoutRoot()`.
 
 This was last checked on pi 1.1.0. A pi update could change these internals. If that happens, or in regular mode, the sidebar falls back to a pop-up overlay (`ctrl+x b`), and everything else keeps working.
 
@@ -313,7 +329,7 @@ Below 116 columns the split sidebar hides itself. Context, cost and provider usa
 
 Other unsupported hooks, all checked on pi 1.1.0:
 
-- Prompt bars: patches `UserMessageComponent.prototype.render`. The original is restored on `/halo off` and on shutdown.
+- Prompt bars: patches `UserMessageComponent.prototype.render`. The original is restored on `/chassis off` and on shutdown.
 - Tool rows: a renderer resolver (`pi.registerToolRenderer`) draws the built-in tools' calls; pi's own tool definitions, settings and active tool set are not touched.
 - Thinking peek: finds the latest assistant message component in the TUI tree.
 
@@ -337,18 +353,18 @@ scripts/screenshot.sh /tmp/shot.png 160 42 "Read button.ts and change red to blu
 Try it without touching your settings:
 
 ```bash
-pi -e /path/to/pi-halo/extensions/halo/index.ts
+pi -e /path/to/pi-chassis/extensions/chassis/index.ts
 ```
 
 ## Versioning
 
-pi-halo follows [Semantic Versioning](https://semver.org). The public API is:
+pi-chassis follows [Semantic Versioning](https://semver.org). The public API is:
 
-- the exports in `package.json` (`pi-halo/client`, `api`, `brand`, `icons`, `provider`, `aws`) and the types they export,
+- the exports in `package.json` (`pi-chassis/client`, `api`, `brand`, `icons`, `provider`, `aws`) and the types they export,
 - the slash commands, their arguments and the `ctrl+x` and `ctrl+p` keys,
-- the settings it stores in `~/.pi/agent/halo.json`.
+- the settings it stores in `~/.pi/agent/chassis.json`.
 
-A change that breaks one of those is a major version, a new feature is a minor version, and a fix is a patch. Before 1.0.0, a breaking change bumps the minor version instead (0.1 to 0.2). Each release supports one pi minor version, declared in `peerDependencies`; supporting a new pi minor is a minor release of pi-halo. Every change is listed in [CHANGELOG.md](CHANGELOG.md); how a release is cut is in [RELEASING.md](RELEASING.md).
+A change that breaks one of those is a major version, a new feature is a minor version, and a fix is a patch. Before 1.0.0, a breaking change bumps the minor version instead (0.1 to 0.2). Each release supports one pi minor version, declared in `peerDependencies`; supporting a new pi minor is a minor release of pi-chassis. Every change is listed in [CHANGELOG.md](CHANGELOG.md); how a release is cut is in [RELEASING.md](RELEASING.md).
 
 ## Credits
 

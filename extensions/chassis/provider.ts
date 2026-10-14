@@ -7,7 +7,7 @@
  * percentage also becomes a Plan bar with no registration (provider-view.ts, activeProviderStatus). A provider extension (or any other package)
  * adds more by registering a spec from client.ts:
  *
- *     import { registerProviderStatus } from "pi-halo/client";
+ *     import { registerProviderStatus } from "pi-chassis/client";
  *
  *     // The provider already publishes a percentage with ctx.ui.setStatus("acme-usage", "Acme 71%"):
  *     registerProviderStatus({ provider: "acme", name: "Acme", color: "plan", statusKey: "acme-usage", label: "Plan" });

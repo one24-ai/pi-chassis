@@ -5,10 +5,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import { icon } from "../extensions/halo/icons.ts";
-import { TOOL_ICONS } from "../extensions/halo/tools.ts";
+import { icon } from "../extensions/chassis/icons.ts";
+import { TOOL_ICONS } from "../extensions/chassis/tools.ts";
 
-process.env.PI_HALO_ICONS = "nerd"; // the plain set is checked in icons.test.ts
+process.env.PI_CHASSIS_ICONS = "nerd"; // the plain set is checked in icons.test.ts
 
 test("every built-in tool has a distinct one-cell icon from the Nerd Font private-use range", () => {
 	const names = Object.keys(TOOL_ICONS);

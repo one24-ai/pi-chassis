@@ -1,6 +1,6 @@
 /**
  * Tool rows for other extensions' tools: registerToolRows (api.ts, client.ts and the raw globalThis
- * protocol) lets an extension have halo draw its tools' rows, with halo knowing no tool by name
+ * protocol) lets an extension have chassis draw its tools' rows, with chassis knowing no tool by name
  * except pi's built-in ones. Run with: pnpm test
  */
 
@@ -10,14 +10,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, test } from "node:test";
 
-process.env.PI_HALO_STATE = join(mkdtempSync(join(tmpdir(), "halo-")), "state.json");
+process.env.PI_CHASSIS_STATE = join(mkdtempSync(join(tmpdir(), "chassis-")), "state.json");
 // These tests check the Nerd Font glyphs; the plain set has its own tests in icons.test.ts.
-process.env.PI_HALO_ICONS = "nerd";
+process.env.PI_CHASSIS_ICONS = "nerd";
 
 const { visibleWidth } = await import("@earendil-works/pi-tui");
-const api = await import("../extensions/halo/api.ts");
-const client = await import("../extensions/halo/client.ts");
-const { installToolRenderers, SPECS } = await import("../extensions/halo/tools.ts");
+const api = await import("../extensions/chassis/api.ts");
+const client = await import("../extensions/chassis/client.ts");
+const { installToolRenderers, SPECS } = await import("../extensions/chassis/tools.ts");
 
 const REGISTRY = Symbol.for("pi-halo/registry");
 const PENDING_TOOL_ROWS = Symbol.for("pi-halo/pendingToolRows");
@@ -31,8 +31,8 @@ const isClean = (s: string) => !DANGEROUS.test(s.replace(/\x1b\[[0-9;:]*m/g, "")
 
 const ok = (text: string, details: any = {}) => ({ content: [{ type: "text", text }], details });
 
-/** A spec for a tool no one in halo knows about. */
-const deployRow = (extra: Partial<import("../extensions/halo/api.ts").ToolRowSpec> = {}) => ({
+/** A spec for a tool no one in chassis knows about. */
+const deployRow = (extra: Partial<import("../extensions/chassis/api.ts").ToolRowSpec> = {}) => ({
 	icon: { nerd: "\u{F0AD}", plain: "#" },
 	title: "Deploy",
 	describe: (a: any, _cwd: string, t: any) => `${t.fg("muted", String(a?.env))} ${t.fg("text", String(a?.version))}`,
@@ -102,7 +102,7 @@ test("a registered spec draws its tool like a built-in row, and other tools fall
 	off();
 });
 
-test("a spec is looked up when a call is drawn, so registering after halo installed its resolver works, and unregister takes effect", () => {
+test("a spec is looked up when a call is drawn, so registering after chassis installed its resolver works, and unregister takes effect", () => {
 	api.installHost();
 	const { pi, resolvers } = fakePi();
 	installToolRenderers(pi);
@@ -128,7 +128,7 @@ test("the newest registration of a name wins and removing it brings back the one
 	first();
 });
 
-test("halo's own rows for the built-in tools win over a registered spec of the same name", () => {
+test("chassis's own rows for the built-in tools win over a registered spec of the same name", () => {
 	api.installHost();
 	const { pi, resolvers } = fakePi();
 	installToolRenderers(pi);
@@ -136,14 +136,14 @@ test("halo's own rows for the built-in tools win over a registered spec of the s
 	for (const name of Object.keys(SPECS)) {
 		const got = resolve(resolvers, name);
 		const { call } = draw(got, { path: "a.ts", command: "ls", pattern: "x" }, ok("x"));
-		assert.ok(!call.join("").includes("Hijacked"), `${name} keeps halo's row`);
+		assert.ok(!call.join("").includes("Hijacked"), `${name} keeps chassis's row`);
 	}
 	off();
 });
 
-test("load order: rows registered through the client before halo loads are queued and taken over", () => {
+test("load order: rows registered through the client before chassis loads are queued and taken over", () => {
 	const off = client.registerToolRows({ early_tool: deployRow() });
-	assert.equal(api.toolRowFor("early_tool"), undefined, "halo is not here yet");
+	assert.equal(api.toolRowFor("early_tool"), undefined, "chassis is not here yet");
 	assert.equal(g[PENDING_TOOL_ROWS].length, 1);
 	api.installHost();
 	assert.equal(g[PENDING_TOOL_ROWS].length, 0);
@@ -152,7 +152,7 @@ test("load order: rows registered through the client before halo loads are queue
 	assert.equal(api.toolRowFor("early_tool"), undefined, "the returned function controls the real registration");
 });
 
-test("load order: unregistered while queued, the rows never reach halo", () => {
+test("load order: unregistered while queued, the rows never reach chassis", () => {
 	const off = client.registerToolRows({ gone_tool: deployRow() });
 	off();
 	assert.equal(g[PENDING_TOOL_ROWS].length, 0);
@@ -160,7 +160,7 @@ test("load order: unregistered while queued, the rows never reach halo", () => {
 	assert.equal(api.toolRowFor("gone_tool"), undefined);
 });
 
-test("load order: halo first, the client registers straight into the registry", () => {
+test("load order: chassis first, the client registers straight into the registry", () => {
 	api.installHost();
 	const off = client.registerToolRows({ direct_tool: deployRow() });
 	assert.ok(api.toolRowFor("direct_tool"));
@@ -176,8 +176,8 @@ test("a host that announces no tool row version is not called", () => {
 	off();
 });
 
-test("the raw protocol works without importing halo: check toolRowsVersion, call registerToolRows, or queue", () => {
-	// What a package that does not depend on pi-halo does.
+test("the raw protocol works without importing chassis: check toolRowsVersion, call registerToolRows, or queue", () => {
+	// What a package that does not depend on pi-chassis does.
 	const rows = { raw_tool: deployRow() };
 	const host = (globalThis as any)[Symbol.for("pi-halo/registry")];
 	let off: () => void;
@@ -188,7 +188,7 @@ test("the raw protocol works without importing halo: check toolRowsVersion, call
 		queue.push({ specs: rows, attach: (undo: () => void) => void (off = undo) });
 		off = () => {};
 	}
-	api.installHost(); // halo loads after it
+	api.installHost(); // chassis loads after it
 	assert.ok(api.toolRowFor("raw_tool"), "taken over from the queue");
 	off!();
 	assert.equal(api.toolRowFor("raw_tool"), undefined);
@@ -264,12 +264,12 @@ test("a spec with no icon draws no glyph, and the plain icon set uses the plain 
 	api.registerToolRows({ bare_tool: deployRow({ icon: undefined }), pair_tool: deployRow() });
 	const args = { env: "e", version: "v" };
 	assert.ok(draw(resolve(resolvers, "bare_tool"), args, ok("x")).call[0]!.startsWith(" Deploy"), "starts at the title");
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	try {
 		const line = draw(resolve(resolvers, "pair_tool"), args, ok("x")).call[0]!;
 		assert.ok(line.includes("# Deploy") && !line.includes("\u{F0AD}"), line);
 	} finally {
-		process.env.PI_HALO_ICONS = "nerd";
+		process.env.PI_CHASSIS_ICONS = "nerd";
 	}
 });
 
@@ -379,7 +379,7 @@ test("an owner id replaces that registrant's earlier group, so /reload and a new
 });
 
 test("an owner id is carried through the client, both directly and through the pending queue", () => {
-	// Queued: the second registration with the same id replaces the first once halo takes both.
+	// Queued: the second registration with the same id replaces the first once chassis takes both.
 	client.registerToolRows({ q: deployRow({ title: "First" }) }, { id: "pkg" });
 	client.registerToolRows({ q: deployRow({ title: "Second" }) }, { id: "pkg" });
 	assert.equal(g[PENDING_TOOL_ROWS].length, 2);
@@ -495,6 +495,6 @@ test("a throw on a finished call latches it; a spec that keeps failing is skippe
 	assert.equal(shellOf(), "self");
 });
 
-test("halo itself knows no extension's tools: SPECS holds only pi's built-in tools", () => {
+test("chassis itself knows no extension's tools: SPECS holds only pi's built-in tools", () => {
 	assert.deepEqual(Object.keys(SPECS).sort(), ["bash", "edit", "find", "grep", "ls", "read", "write"]);
 });

@@ -10,8 +10,8 @@
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, mock, test } from "node:test";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import { LIVE_DELAY_MS } from "../extensions/halo/bash-output.ts";
-import { makeRenderers, rowShape, SPECS } from "../extensions/halo/tools.ts";
+import { LIVE_DELAY_MS } from "../extensions/chassis/bash-output.ts";
+import { makeRenderers, rowShape, SPECS } from "../extensions/chassis/tools.ts";
 
 const strip = (s: string) => s.replace(/\x1b\[[0-9;:]*m/g, "");
 const theme = {

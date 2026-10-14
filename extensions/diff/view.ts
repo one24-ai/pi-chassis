@@ -15,7 +15,7 @@
 import { relative, resolve } from "node:path";
 import type { ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
 import { type Component, matchesKey, truncateToWidth, type TuiMouseEvent, type TuiMouseEventResult, visibleWidth } from "@earendil-works/pi-tui";
-import { icon } from "../halo/icons.ts";
+import { icon } from "../chassis/icons.ts";
 import type { FileDiff, Loaded } from "./git-diff.ts";
 import { type Body, buildBody, cell, clean, hunkAt, type Palette, paletteFor, renderBodyRow, renderFileRow } from "./render.ts";
 import type { DiffAction, DiffActionContext, DiffFileInfo, DiffHunkInfo } from "./types.ts";

@@ -10,8 +10,8 @@ import { join } from "node:path";
 import { test } from "node:test";
 import { findTodoFile, MAX_TODO_BYTES, MAX_TODO_ITEMS, parseTodos, readTodos } from "../extensions/widgets/todo/parse.ts";
 
-process.env.PI_HALO_STATE = join(mkdtempSync(join(tmpdir(), "halo-")), "state.json");
-const api = await import("../extensions/halo/api.ts");
+process.env.PI_CHASSIS_STATE = join(mkdtempSync(join(tmpdir(), "chassis-")), "state.json");
+const api = await import("../extensions/chassis/api.ts");
 const { default: installTodoWidget } = await import("../extensions/widgets/todo/index.ts");
 
 test("parseTodos keeps open top-level items only", () => {
@@ -44,7 +44,7 @@ test("parseTodos falls back to plain lines and handles empty files", () => {
 });
 
 test("findTodoFile looks at the repo root from a subdirectory", () => {
-	const root = mkdtempSync(join(tmpdir(), "halo-todo-"));
+	const root = mkdtempSync(join(tmpdir(), "chassis-todo-"));
 	try {
 		mkdirSync(join(root, ".git"));
 		mkdirSync(join(root, "src", "deep"), { recursive: true });
@@ -58,7 +58,7 @@ test("findTodoFile looks at the repo root from a subdirectory", () => {
 });
 
 function repoWith(todo: string): string {
-	const root = mkdtempSync(join(tmpdir(), "halo-todo-"));
+	const root = mkdtempSync(join(tmpdir(), "chassis-todo-"));
 	mkdirSync(join(root, ".git"));
 	writeFileSync(join(root, "TODO.md"), todo);
 	return root;

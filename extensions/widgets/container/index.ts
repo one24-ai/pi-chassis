@@ -7,8 +7,8 @@
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { registerWidget } from "../../halo/api.ts";
-import { type IconLike, ICONS } from "../../halo/icons.ts";
+import { registerWidget } from "../../chassis/api.ts";
+import { type IconLike, ICONS } from "../../chassis/icons.ts";
 import { containerLabel, detectContainer } from "./detect.ts";
 
 // Nerd Font glyphs: md-docker, md-kubernetes.

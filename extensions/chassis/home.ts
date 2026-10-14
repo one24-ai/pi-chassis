@@ -13,7 +13,7 @@
  *
  *            ● Tip Press tab to cycle between Build and Plan agents
  *
- *   ● Acme pi 1.1.0 · halo 0.1.0  ~/git/pi-halo  main  ● 6 MCP   ⟲ "halo" 2h ago  ctrl+x r
+ *   ● Acme pi 1.1.0 · chassis 0.1.0  ~/git/pi-chassis  main  ● 6 MCP   ⟲ "chassis" 2h ago  ctrl+x r
  */
 
 import type { Theme } from "@earendil-works/pi-coding-agent";
@@ -23,7 +23,7 @@ import { brandLine, fmtAgo, homeRelative, sanitize } from "./palette.ts";
 import { icon, leadIcon } from "./icons.ts";
 import { branchGlyph, worktreeTag } from "./sidebar.ts";
 import type { UiState } from "./state.ts";
-import { haloVersion } from "./version.ts";
+import { chassisVersion } from "./version.ts";
 
 /** OpenCode's prompt width on the home screen (tui.prompt.max_width default). */
 export const HOME_PROMPT_WIDTH = 75;
@@ -144,7 +144,7 @@ export function renderTip(theme: Theme, width: number, index: number): string[] 
  * Bottom bar (OpenCode home/footer.tsx): 1 row of padding above and below, 2 columns at the sides;
  * the folder and branch (with the branch icon) muted and the MCP count with a coloured dot on the left; on the right, the most
  * recent other session in this directory and the leader key that resumes it. With `piVersion`, the
- * brand with the pi and halo versions comes first on the same line.
+ * brand with the pi and chassis versions comes first on the same line.
  */
 export function renderHomeFooter(state: UiState, theme: Theme, width: number, piVersion?: string): string[] {
 	const cwd = homeRelative(state.ctx?.cwd ?? process.cwd());
@@ -164,8 +164,8 @@ export function renderHomeFooter(state: UiState, theme: Theme, width: number, pi
 			// widget error: leave it out
 		}
 	}
-	// The brand with the pi and halo versions leads the line.
-	if (piVersion) left.unshift(brandLine(theme, piVersion, haloVersion()));
+	// The brand with the pi and chassis versions leads the line.
+	if (piVersion) left.unshift(brandLine(theme, piVersion, chassisVersion()));
 	const leftStr = left.join("  ");
 	// Right: the most recent other session here, with the leader key that resumes it.
 	const last = state.lastSession;

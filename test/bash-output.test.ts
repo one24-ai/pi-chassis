@@ -9,7 +9,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import { cleanLine, foldLines, formatWallTime, parseBashOutput } from "../extensions/halo/bash-output.ts";
+import { cleanLine, foldLines, formatWallTime, parseBashOutput } from "../extensions/chassis/bash-output.ts";
 
 const ok = { isError: false };
 const failed = { isError: true };
@@ -111,7 +111,7 @@ test("formatWallTime hides sub-second runs and formats the rest", () => {
 
 // ---- live output while a command runs ------------------------------------------------------------
 
-import { LIVE_DELAY_MS, LIVE_TAIL_LINES, liveTail, liveVisible, liveWaitMs } from "../extensions/halo/bash-output.ts";
+import { LIVE_DELAY_MS, LIVE_TAIL_LINES, liveTail, liveVisible, liveWaitMs } from "../extensions/chassis/bash-output.ts";
 
 test("liveTail: the last lines so far, cleaned, with a count of the earlier ones", () => {
 	const raw = Array.from({ length: 9 }, (_, i) => `line ${i + 1}`).join("\n");
@@ -154,7 +154,7 @@ test("liveWaitMs: how long until a quiet row should look again", () => {
 
 // ---- the peek left under a finished row ----------------------------------------------------------
 
-import { bashPeek, PEEK_LINES } from "../extensions/halo/bash-output.ts";
+import { bashPeek, PEEK_LINES } from "../extensions/chassis/bash-output.ts";
 
 test("bashPeek: the last lines of a finished command, and how many are not shown", () => {
 	const ten = Array.from({ length: 10 }, (_, i) => `l${i + 1}`).join("\n");
@@ -180,7 +180,7 @@ test("bashPeek: lines pi cut from a huge output are counted as hidden", () => {
 
 // ---- very long lines ---------------------------------------------------------------------------
 
-import { MAX_LINE_CHARS } from "../extensions/halo/bash-output.ts";
+import { MAX_LINE_CHARS } from "../extensions/chassis/bash-output.ts";
 
 test("a line longer than the cap is cut with an ellipsis, by code points", () => {
 	assert.equal(MAX_LINE_CHARS, 1000);

@@ -7,10 +7,10 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { initTheme, UserMessageComponent } from "@earendil-works/pi-coding-agent";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import { drawsUserBox, userMessageModes } from "../extensions/halo/message-modes.ts";
-import { installMessageStyle, LABEL_COLUMN, MIN_TEXT_WIDTH, modeOfUserBox, setChatContainer } from "../extensions/halo/messages.ts";
-import { resetBrand, setBrand } from "../extensions/halo/brand.ts";
-import { createState } from "../extensions/halo/state.ts";
+import { drawsUserBox, userMessageModes } from "../extensions/chassis/message-modes.ts";
+import { installMessageStyle, LABEL_COLUMN, MIN_TEXT_WIDTH, modeOfUserBox, setChatContainer } from "../extensions/chassis/messages.ts";
+import { resetBrand, setBrand } from "../extensions/chassis/brand.ts";
+import { createState } from "../extensions/chassis/state.ts";
 
 initTheme("dark", false);
 

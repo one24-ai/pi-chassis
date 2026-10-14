@@ -13,8 +13,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { type ExtensionAPI, getAgentDir } from "@earendil-works/pi-coding-agent";
-import { registerWidget } from "../../halo/api.ts";
-import { type IconLike, ICONS } from "../../halo/icons.ts";
+import { registerWidget } from "../../chassis/api.ts";
+import { type IconLike, ICONS } from "../../chassis/icons.ts";
 import { connectedServers, enabledServers, formatStatus, type McpStatus, parseMcpServers, summarize } from "./status.ts";
 
 const POLL_MS = 2000;

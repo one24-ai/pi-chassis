@@ -7,11 +7,11 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { initTheme, UserMessageComponent } from "@earendil-works/pi-coding-agent";
 import { colorToRgb, parseColor } from "@earendil-works/pi-tui";
-import { DEFAULT_BRAND, resetBrand, setBrand } from "../extensions/halo/brand.ts";
-import { installMessageStyle, setChatContainer } from "../extensions/halo/messages.ts";
-import { contrast, isLight, planColor, primary, readableOn, surfaceColor, toColor, widgetPaint } from "../extensions/halo/palette.ts";
-import { modePill, promptRow, THINKING_COLORS, thinkingLabel } from "../extensions/halo/prompt-row.ts";
-import { createState } from "../extensions/halo/state.ts";
+import { DEFAULT_BRAND, resetBrand, setBrand } from "../extensions/chassis/brand.ts";
+import { installMessageStyle, setChatContainer } from "../extensions/chassis/messages.ts";
+import { contrast, isLight, planColor, primary, readableOn, surfaceColor, toColor, widgetPaint } from "../extensions/chassis/palette.ts";
+import { modePill, promptRow, THINKING_COLORS, thinkingLabel } from "../extensions/chassis/prompt-row.ts";
+import { createState } from "../extensions/chassis/state.ts";
 
 initTheme("dark", false);
 

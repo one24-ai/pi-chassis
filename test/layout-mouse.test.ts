@@ -10,8 +10,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { type Component, ScrollView, type Terminal, TuiAltScreen, VStack } from "@earendil-works/pi-tui";
-import { installLayout } from "../extensions/halo/layout.ts";
-import { createState } from "../extensions/halo/state.ts";
+import { installLayout } from "../extensions/chassis/layout.ts";
+import { createState } from "../extensions/chassis/state.ts";
 
 class FakeTerminal implements Terminal {
 	onInput: (data: string) => void = () => {};

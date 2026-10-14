@@ -24,7 +24,7 @@ import type { UiState } from "./state.ts";
 const ORIGINAL = Symbol.for("pi-halo/original-root");
 
 /**
- * The tree to search for pi's own components. Once halo has wrapped the layout root in its
+ * The tree to search for pi's own components. Once chassis has wrapped the layout root in its
  * sidebar split, `tui.layoutRoot` is a plain object with no children; pi's real root hangs off it
  * under a symbol. Without it, a search for message and tool components finds nothing.
  */
@@ -34,7 +34,7 @@ export function piRootOf(tui: unknown): unknown {
 }
 /** pi-tui's layout-node hook (layout-node.ts); not exported, but a registered symbol. */
 const LAYOUT_NODE = Symbol.for("@earendil-works/pi-tui/layout-node");
-const GUARD_WIDGET = "halo-layout";
+const GUARD_WIDGET = "chassis-layout";
 const GUTTER = 2;
 /** Blank column used as horizontal padding around the transcript and prompt. */
 const gutter: Component = { invalidate() {}, render: () => [] };

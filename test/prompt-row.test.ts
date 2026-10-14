@@ -5,13 +5,13 @@
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import { registerBrand } from "../extensions/halo/client.ts";
-import { resetBrand } from "../extensions/halo/brand.ts";
-import { ICONS } from "../extensions/halo/icons.ts";
-import { modePill, promptRow, THINKING_COLORS, thinkingLabel } from "../extensions/halo/prompt-row.ts";
+import { registerBrand } from "../extensions/chassis/client.ts";
+import { resetBrand } from "../extensions/chassis/brand.ts";
+import { ICONS } from "../extensions/chassis/icons.ts";
+import { modePill, promptRow, THINKING_COLORS, thinkingLabel } from "../extensions/chassis/prompt-row.ts";
 
 // These tests check the Nerd Font glyphs; the plain set has its own tests in icons.test.ts.
-process.env.PI_HALO_ICONS = "nerd";
+process.env.PI_CHASSIS_ICONS = "nerd";
 
 const strip = (s: string) => s.replace(/\x1b\[[0-9;:]*m/g, "");
 const LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
@@ -44,7 +44,7 @@ const luma = (hex: string) => {
 	return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 
-test("thinkingLabel: halo's own colour per level, nothing for a model that does not reason", () => {
+test("thinkingLabel: chassis's own colour per level, nothing for a model that does not reason", () => {
 	assert.equal(thinkingLabel(theme, undefined), "");
 	assert.deepEqual(Object.keys(THINKING_COLORS), LEVELS, "every level has a colour, in order");
 	const seen = new Set<string>();

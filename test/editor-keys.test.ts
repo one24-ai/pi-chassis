@@ -1,5 +1,5 @@
 /**
- * Tab on an empty prompt switches Build/Plan. Shift+Tab is not taken by halo: it goes on to pi,
+ * Tab on an empty prompt switches Build/Plan. Shift+Tab is not taken by chassis: it goes on to pi,
  * whose binding cycles the thinking level. Driven through the real PromptEditor and pi's keybindings.
  */
 
@@ -7,8 +7,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { initTheme } from "@earendil-works/pi-coding-agent";
 import { matchesKey } from "@earendil-works/pi-tui";
-import { PromptEditor } from "../extensions/halo/editor.ts";
-import { createState } from "../extensions/halo/state.ts";
+import { PromptEditor } from "../extensions/chassis/editor.ts";
+import { createState } from "../extensions/chassis/state.ts";
 
 initTheme("dark", false);
 

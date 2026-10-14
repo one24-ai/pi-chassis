@@ -97,7 +97,7 @@ function main() {
 	writeFileSync(changelogPath, changelog);
 	git("add", "package.json", "CHANGELOG.md");
 	git("commit", "-m", `Release ${version}`);
-	git("tag", "-a", `v${version}`, "-m", `pi-halo ${version}`);
+	git("tag", "-a", `v${version}`, "-m", `pi-chassis ${version}`);
 	console.log(`\nTagged v${version}. To publish:\n  git push origin main --follow-tags\nCI publishes v${version} to npm when the tag arrives. To mirror it elsewhere, see RELEASING.md.`);
 }
 

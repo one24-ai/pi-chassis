@@ -11,7 +11,7 @@
  */
 
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { getRegistry, registerWidget } from "../halo/api.ts";
+import { getRegistry, registerWidget } from "../chassis/api.ts";
 import { loadBranch, loadChanges, parseUnifiedDiff } from "./git-diff.ts";
 import { diffHost } from "./host.ts";
 import type { OpenDiffRequest } from "./types.ts";

@@ -13,12 +13,12 @@ import { join } from "node:path";
 import { test } from "node:test";
 import { type Component, ScrollView, type Terminal, TuiAltScreen, VStack } from "@earendil-works/pi-tui";
 
-process.env.PI_HALO_STATE = join(mkdtempSync(join(tmpdir(), "halo-")), "state.json");
+process.env.PI_CHASSIS_STATE = join(mkdtempSync(join(tmpdir(), "chassis-")), "state.json");
 
-const api = await import("../extensions/halo/api.ts");
-const { installLayout } = await import("../extensions/halo/layout.ts");
-const { renderSidebar } = await import("../extensions/halo/sidebar.ts");
-const { createState } = await import("../extensions/halo/state.ts");
+const api = await import("../extensions/chassis/api.ts");
+const { installLayout } = await import("../extensions/chassis/layout.ts");
+const { renderSidebar } = await import("../extensions/chassis/sidebar.ts");
+const { createState } = await import("../extensions/chassis/state.ts");
 
 const COLS = 160;
 const ROWS = 40;

@@ -1,7 +1,7 @@
 /**
  * Which mode each user message was sent in, read from the session.
  *
- * halo writes a `halo-mode` custom entry at every Build/Plan switch, so the mode of a
+ * chassis writes a `halo-mode` custom entry (the name it had as pi-halo, kept so older sessions still read) at every Build/Plan switch, so the mode of a
  * message is the last such entry before it on the branch (build when there is none). The result is
  * one mode per user message box that pi draws, in order, so the Nth box in the chat is the Nth
  * mode. pi draws a box for a user message only when it has text, and for a skill block only when

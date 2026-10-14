@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 let cached: { value: string | undefined } | undefined;
 
-export function haloVersion(): string | undefined {
+export function chassisVersion(): string | undefined {
 	if (cached) return cached.value;
 	let value: string | undefined;
 	try {

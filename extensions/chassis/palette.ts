@@ -118,10 +118,10 @@ export function brandMark(theme: Theme): string {
 	return b.name ? `${glyph} ${theme.bold(theme.fg("text", b.name))}` : glyph;
 }
 
-/** "<mark> pi 1.1.0" (plus " · halo 0.1.0" when given): the brand line on the home screen bottom bar and in the sidebar. */
-export function brandLine(theme: Theme, version: string, haloVersion?: string): string {
-	const halo = haloVersion ? ` ${theme.fg("dim", "·")} ${theme.fg("muted", `halo ${haloVersion}`)}` : "";
-	return `${brandMark(theme)} ${theme.fg("muted", `pi ${version}`)}${halo}`;
+/** "<mark> pi 1.1.0" (plus " · chassis 0.1.0" when given): the brand line on the home screen bottom bar and in the sidebar. */
+export function brandLine(theme: Theme, version: string, chassisVersion?: string): string {
+	const chassis = chassisVersion ? ` ${theme.fg("dim", "·")} ${theme.fg("muted", `chassis ${chassisVersion}`)}` : "";
+	return `${brandMark(theme)} ${theme.fg("muted", `pi ${version}`)}${chassis}`;
 }
 
 const LEVEL_COLOR: Record<WidgetLevel, WidgetColor> = {

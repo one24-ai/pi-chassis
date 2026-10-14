@@ -1,6 +1,6 @@
-pi-halo includes code adapted from the following projects.
+pi-chassis includes code adapted from the following projects.
 
-== pi-open-tui (extensions/halo/peek.ts, extensions/halo/telemetry.ts) ==
+== pi-open-tui (extensions/chassis/peek.ts, extensions/chassis/telemetry.ts) ==
 https://github.com/OldSuns/pi-open-tui
 
 MIT License
@@ -25,6 +25,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-== pi-coding-agent plan-mode example (extensions/halo/readonly-command.ts, the first version of the bash allow-list) ==
+== pi-coding-agent plan-mode example (extensions/chassis/readonly-command.ts, the first version of the bash allow-list) ==
 https://github.com/earendil-works/pi
 License: MIT
