@@ -2,7 +2,7 @@
 
 A workbench for [pi](https://pi.dev): an interface, git workflows and a widget platform for everyday engineering. It adds a sidebar and home screen, Build and Plan modes, a git diff view, and git commands that draft commit messages and pull requests for you. The brand (name, mark, colours, startup art) is a replaceable layer: see [Branding](#branding).
 
-Requires pi 1.1 and Node.js 22.19 or later.
+Requires pi 1.2 and Node.js 22.19 or later.
 
 - **Home screen**: until the first message, the pi logo, the prompt (75 columns, with an `Ask anything…` placeholder and a blinking cursor), a random tip, and a bottom bar with the brand, the pi and chassis versions, the directory and branch, MCP count, and the last session here (`ctrl+x r` resumes it). Fullscreen mode only.
 - **Sidebar** on the right with session title, context and cost, status widgets and todos. `ctrl+x b` toggles it.
@@ -323,11 +323,11 @@ The section reads pi-subagents' public `status` RPC only, so it keeps working as
 
 pi has no extension API for a side panel. In fullscreen mode (`"tuiMode": "fullscreen"`), pi renders one layout root, a vertical stack of transcript plus input. pi-chassis wraps that root in a horizontal stack with the sidebar as a fixed 48-column right column, using pi-tui's `setLayoutRoot()`.
 
-This was last checked on pi 1.1.0. A pi update could change these internals. If that happens, or in regular mode, the sidebar falls back to a pop-up overlay (`ctrl+x b`), and everything else keeps working.
+This was last checked on pi 1.2.0. A pi update could change these internals. If that happens, or in regular mode, the sidebar falls back to a pop-up overlay (`ctrl+x b`), and everything else keeps working.
 
 Below 116 columns the split sidebar hides itself. Context, cost and provider usage, status widgets and other extensions' statuses (MCP, LSP, ...) live in the sidebar; whenever it is hidden they show in the footer instead.
 
-Other unsupported hooks, all checked on pi 1.1.0:
+Other unsupported hooks, all checked on pi 1.2.0:
 
 - Prompt bars: patches `UserMessageComponent.prototype.render`. The original is restored on `/chassis off` and on shutdown.
 - Tool rows: a renderer resolver (`pi.registerToolRenderer`) draws the built-in tools' calls; pi's own tool definitions, settings and active tool set are not touched.

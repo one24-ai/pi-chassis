@@ -7,6 +7,7 @@ All notable changes to pi-chassis (called pi-halo up to 0.3.0) are listed here. 
 ### Changed
 
 - **Breaking:** pi-halo is now **pi-chassis**. Install `npm:pi-chassis` and import `pi-chassis/client` (and the other exports) instead of `pi-halo/...`. The commands are `/chassis` and `/chassis-resume-last`, the settings file is `~/.pi/agent/chassis.json`, the environment variables are `PI_CHASSIS_ICONS` and `PI_CHASSIS_STATE`, and the brand line reads `chassis X.Y.Z`. See [Moving from pi-halo](README.md#moving-from-pi-halo).
+- **Breaking:** requires pi 1.2 (`>=1.2.0 <1.3.0`). pi 1.1.0 no longer installs cleanly. The sidebar layout, prompt bars and thinking peek were checked against pi 1.2.0. Plan mode's read-only reminder now also reaches runs another extension starts with a custom message, which pi 1.2 passes through `before_agent_start`.
 
 ### Deprecated
 
