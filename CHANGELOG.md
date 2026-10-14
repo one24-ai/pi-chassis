@@ -4,6 +4,10 @@ All notable changes to pi-chassis (called pi-halo up to 0.3.0) are listed here. 
 
 ## [Unreleased]
 
+### Changed
+
+- The README is now a short overview with links, and the detail lives in `docs/` (usage, git workflows, widgets, tool rows, the diff view API, branding, provider status, how the sidebar works, development, and moving from pi-halo). `docs/` is part of the published package, so the docs match the installed version. The README sections that other packages refer to by name moved: "Adding a widget" and "Adding a widget without depending on pi-chassis" are in `docs/widgets.md`, "Tool rows for your extension's tools" is in `docs/tool-rows.md`, and "Moving from pi-halo" is in `docs/moving-from-pi-halo.md`.
+
 ## [0.5.0] - 2026-10-14
 
 ### Added

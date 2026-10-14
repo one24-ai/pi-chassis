@@ -69,6 +69,7 @@
     "extensions",
     "scripts/link-pi.mjs",
     "README.md",
+    "docs",
     "CHANGELOG.md",
     "LICENSE",
     "THIRD_PARTY_NOTICES"

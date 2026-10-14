@@ -1,6 +1,6 @@
 # pi-chassis
 
-A workbench for [pi](https://pi.dev): an interface, git workflows and a widget platform for everyday engineering. It adds a sidebar and home screen, Build and Plan modes, a git diff view, and git commands that draft commit messages and pull requests for you. The brand (name, mark, colours, startup art) is a replaceable layer: see [Branding](docs/branding.md).
+A workbench for [pi](https://pi.dev): a sidebar, a home screen, Build and Plan modes, a git diff view, git commands that draft commit messages and pull requests, and a small API for widgets, tool rows and branding. The brand (name, mark, colours, startup art) is a replaceable layer: see [Branding](docs/branding.md).
 
 Requires pi 1.2 and Node.js 22.19 or later.
 
@@ -18,16 +18,24 @@ pi-chassis replaces pi's header, footer and editor, so it does not combine with 
 
 ## Documentation
 
-- [Using pi-chassis](docs/usage.md): features, keys, icons and themes, subagents
-- [Git workflows](docs/git.md)
-- [Adding a widget](docs/widgets.md)
+Using it:
+
+- [Using pi-chassis](docs/usage.md): the features in detail, keys, subagents, icons and themes
+- [Git workflows](docs/git.md): `/commit`, `/push`, `/merge`, `/pr`, `/git` and the diff view
+- [Moving from pi-halo](docs/moving-from-pi-halo.md)
+
+Building on it:
+
+- [Adding a widget](docs/widgets.md), with or without a dependency on pi-chassis
 - [Tool rows for your extension's tools](docs/tool-rows.md)
 - [Diff view API](docs/diff-api.md)
 - [Branding](docs/branding.md)
 - [Provider status](docs/provider-status.md)
+
+Working on pi-chassis:
+
 - [How the sidebar works](docs/internals.md)
-- [Development](docs/development.md)
-- [Moving from pi-halo](docs/moving-from-pi-halo.md)
+- [Development](docs/development.md) and [RELEASING.md](RELEASING.md)
 
 ## Versioning
 
