@@ -1,5 +1,5 @@
 /**
- * Cleaning for text that did not come from halo: tool arguments and results, widget values, session
+ * Cleaning for text that did not come from chassis: tool arguments and results, widget values, session
  * names, directory names. A terminal acts on escape sequences in anything it is sent, so text that
  * can be influenced from outside (a file's contents, a branch name, a model's tool call) must not
  * reach it as it is: an OSC 52 sequence writes to the clipboard, OSC 0 and OSC 2 set the window

@@ -9,15 +9,15 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 
-process.env.PI_HALO_STATE = join(mkdtempSync(join(tmpdir(), "halo-")), "state.json");
+process.env.PI_CHASSIS_STATE = join(mkdtempSync(join(tmpdir(), "chassis-")), "state.json");
 // These tests check the Nerd Font glyphs; the plain set has its own tests in icons.test.ts.
-process.env.PI_HALO_ICONS = "nerd";
+process.env.PI_CHASSIS_ICONS = "nerd";
 
 const { roleTone } = await import("../extensions/widgets/aws/resolve.ts");
-const api = await import("../extensions/halo/api.ts");
+const api = await import("../extensions/chassis/api.ts");
 const { default: installAws } = await import("../extensions/widgets/aws/index.ts");
-const { renderSidebar } = await import("../extensions/halo/sidebar.ts");
-const { createState } = await import("../extensions/halo/state.ts");
+const { renderSidebar } = await import("../extensions/chassis/sidebar.ts");
+const { createState } = await import("../extensions/chassis/state.ts");
 
 test("roleTone: read-only names are read, admin-style names are write, the rest are neither", () => {
 	for (const r of ["Dev-ReadOnly", "ReadOnlyAccess", "ViewOnlyAccess", "readonly", "Dev-Read-Only", "SecurityAudit-ViewOnly"]) {

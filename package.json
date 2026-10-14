@@ -1,5 +1,5 @@
 {
-  "name": "pi-halo",
+  "name": "pi-chassis",
   "version": "0.3.0",
   "description": "A workbench for pi: an interface, git workflows and a widget platform for everyday engineering. Sidebar and home screen, Build/Plan modes, ctrl+x leader keys and a ctrl+p palette, a git diff view, git commands that draft commit messages and pull requests, and a widget and brand API for other packages.",
   "type": "module",
@@ -7,11 +7,11 @@
   "author": "Zach Koncir <zach@one24.ai>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/one24-ai/pi-halo.git"
+    "url": "git+https://github.com/one24-ai/pi-chassis.git"
   },
-  "homepage": "https://github.com/one24-ai/pi-halo#readme",
+  "homepage": "https://github.com/one24-ai/pi-chassis#readme",
   "bugs": {
-    "url": "https://github.com/one24-ai/pi-halo/issues"
+    "url": "https://github.com/one24-ai/pi-chassis/issues"
   },
   "engines": {
     "node": ">=22.19.0"
@@ -26,34 +26,34 @@
   ],
   "exports": {
     "./client": {
-      "types": "./dist/halo/client.d.ts",
-      "default": "./dist/halo/client.js"
+      "types": "./dist/chassis/client.d.ts",
+      "default": "./dist/chassis/client.js"
     },
     "./api": {
-      "types": "./dist/halo/api.d.ts",
-      "default": "./dist/halo/api.js"
+      "types": "./dist/chassis/api.d.ts",
+      "default": "./dist/chassis/api.js"
     },
     "./brand": {
-      "types": "./dist/halo/brand.d.ts",
-      "default": "./dist/halo/brand.js"
+      "types": "./dist/chassis/brand.d.ts",
+      "default": "./dist/chassis/brand.js"
     },
     "./icons": {
-      "types": "./dist/halo/icons.d.ts",
-      "default": "./dist/halo/icons.js"
+      "types": "./dist/chassis/icons.d.ts",
+      "default": "./dist/chassis/icons.js"
     },
     "./aws": {
       "types": "./dist/widgets/aws/resolve.d.ts",
       "default": "./dist/widgets/aws/resolve.js"
     },
     "./provider": {
-      "types": "./dist/halo/provider.d.ts",
-      "default": "./dist/halo/provider.js"
+      "types": "./dist/chassis/provider.d.ts",
+      "default": "./dist/chassis/provider.js"
     },
     "./package.json": "./package.json"
   },
   "pi": {
     "extensions": [
-      "./extensions/halo/index.ts",
+      "./extensions/chassis/index.ts",
       "./extensions/widgets/container/index.ts",
       "./extensions/widgets/aws/index.ts",
       "./extensions/widgets/mcp/index.ts",
@@ -87,8 +87,8 @@
     "release": "node scripts/release.mjs"
   },
   "peerDependencies": {
-    "@earendil-works/pi-coding-agent": ">=1.1.0 <1.2.0",
-    "@earendil-works/pi-tui": ">=1.1.0 <1.2.0"
+    "@earendil-works/pi-coding-agent": ">=1.2.0 <1.3.0",
+    "@earendil-works/pi-tui": ">=1.2.0 <1.3.0"
   },
   "devDependencies": {
     "@types/node": "24.10.1",

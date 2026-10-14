@@ -13,18 +13,18 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 
-process.env.PI_HALO_STATE = join(mkdtempSync(join(tmpdir(), "halo-")), "state.json");
-process.env.PI_HALO_ICONS = "nerd";
+process.env.PI_CHASSIS_STATE = join(mkdtempSync(join(tmpdir(), "chassis-")), "state.json");
+process.env.PI_CHASSIS_ICONS = "nerd";
 
 const { visibleWidth } = await import("@earendil-works/pi-tui");
 const { initTheme } = await import("@earendil-works/pi-coding-agent");
-const api = await import("../extensions/halo/api.ts");
-const { sanitize, sanitizeKeepColor, sanitizeLines, scrubText, homeRelative } = await import("../extensions/halo/palette.ts");
-const { makeRenderers, SPECS } = await import("../extensions/halo/tools.ts");
-const { renderSidebar } = await import("../extensions/halo/sidebar.ts");
-const { renderFooter } = await import("../extensions/halo/footer.ts");
-const { renderHomeFooter } = await import("../extensions/halo/home.ts");
-const { createState } = await import("../extensions/halo/state.ts");
+const api = await import("../extensions/chassis/api.ts");
+const { sanitize, sanitizeKeepColor, sanitizeLines, scrubText, homeRelative } = await import("../extensions/chassis/palette.ts");
+const { makeRenderers, SPECS } = await import("../extensions/chassis/tools.ts");
+const { renderSidebar } = await import("../extensions/chassis/sidebar.ts");
+const { renderFooter } = await import("../extensions/chassis/footer.ts");
+const { renderHomeFooter } = await import("../extensions/chassis/home.ts");
+const { createState } = await import("../extensions/chassis/state.ts");
 
 initTheme("dark", false);
 
@@ -251,8 +251,8 @@ test("footer: the directory is cleaned when the sidebar is hidden", () => {
 // ---- spinner colour -------------------------------------------------------------------------------
 
 test("the working spinner takes the brand's primary colour, and the theme accent when it is unusable", async () => {
-	const { setBrand } = await import("../extensions/halo/brand.ts");
-	const { spinnerFrame } = await import("../extensions/halo/palette.ts");
+	const { setBrand } = await import("../extensions/chassis/brand.ts");
+	const { spinnerFrame } = await import("../extensions/chassis/palette.ts");
 	const th = { fg: (c: string, t: string) => `<${c}>${t}</${c}>`, bold: (t: string) => t, getColorMode: () => "truecolor" } as any;
 	const restore = setBrand({ colors: { primary: "#112233" } as any });
 	try {
@@ -263,13 +263,13 @@ test("the working spinner takes the brand's primary colour, and the theme accent
 		setBrand({ colors: { primary: "not a colour" } as any });
 		assert.equal(spinnerFrame(th, "x"), "<accent>x</accent>", "an unusable colour falls back to the theme accent");
 	} finally {
-		(await import("../extensions/halo/brand.ts")).resetBrand();
+		(await import("../extensions/chassis/brand.ts")).resetBrand();
 	}
 });
 
 test("index.ts has no hard-coded spinner colour", async () => {
 	const { readFileSync } = await import("node:fs");
-	const src = readFileSync(new URL("../extensions/halo/index.ts", import.meta.url), "utf8");
+	const src = readFileSync(new URL("../extensions/chassis/index.ts", import.meta.url), "utf8");
 	assert.doesNotMatch(src, /\\x1b\[38;2;\d/, "no literal truecolor escape");
 	assert.match(src, /spinnerFrame/);
 });

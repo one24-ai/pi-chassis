@@ -1,12 +1,12 @@
 /**
- * The on/off switch for the git commands, saved in halo's state file under `git: { enabled }`
- * next to the other halo settings. It is read on each use, so `/git off` takes effect at once and
+ * The on/off switch for the git commands, saved in chassis's state file under `git: { enabled }`
+ * next to the other chassis settings. It is read on each use, so `/git off` takes effect at once and
  * in every running session. Anything missing or malformed means on.
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { statePath } from "../halo/api.ts";
+import { statePath } from "../chassis/api.ts";
 
 export function loadGitEnabled(path = statePath()): boolean {
 	try {

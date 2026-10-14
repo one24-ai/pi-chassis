@@ -1,11 +1,12 @@
 /**
- * Icons: every glyph halo draws from a Nerd Font lives here, each with a plain twin that needs
+ * Icons: every glyph chassis draws from a Nerd Font lives here, each with a plain twin that needs
  * no special font. The plain twin takes the same number of cells as the Nerd glyph (one, or none
  * where the words beside it already say it), so no layout changes between the two sets.
  *
  * Which set is used, first match wins:
- *   1. the PI_HALO_ICONS environment variable ("nerd" or "plain")
- *   2. the user's setting, `/halo icons nerd|plain`, saved in halo.json
+ *   1. the PI_CHASSIS_ICONS environment variable ("nerd" or "plain"; PI_HALO_ICONS, its name
+ *      under pi-halo, still works when PI_CHASSIS_ICONS is unset)
+ *   2. the user's setting, `/chassis icons nerd|plain`, saved in chassis.json
  *   3. the brand's default (`icons` in its spec: a brand that ships a font can ask for "nerd")
  *   4. plain, so a terminal without a Nerd Font never shows empty boxes
  *
@@ -126,9 +127,9 @@ export function resetIconSetting(): void {
 	s.loaded = false;
 }
 
-/** Where the current set comes from, for `/halo icons`. */
+/** Where the current set comes from, for `/chassis icons`. */
 export function iconSource(): "env" | "setting" | "brand" | "default" {
-	if (asSet(process.env.PI_HALO_ICONS)) return "env";
+	if (asSet(process.env.PI_CHASSIS_ICONS ?? process.env.PI_HALO_ICONS)) return "env";
 	const s = slot();
 	if (!s.loaded) {
 		s.setting = loadIconSetting();
@@ -140,7 +141,7 @@ export function iconSource(): "env" | "setting" | "brand" | "default" {
 
 /** The icon set in use. */
 export function iconSet(): IconSet {
-	const env = asSet(process.env.PI_HALO_ICONS);
+	const env = asSet(process.env.PI_CHASSIS_ICONS ?? process.env.PI_HALO_ICONS);
 	if (env) return env;
 	const s = slot();
 	if (!s.loaded) {

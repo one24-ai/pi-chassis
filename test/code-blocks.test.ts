@@ -7,9 +7,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { initTheme } from "@earendil-works/pi-coding-agent";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import { piRootOf } from "../extensions/halo/layout.ts";
-import { isTall } from "../extensions/halo/messages.ts";
-import { countLines, makeRenderers, SPECS } from "../extensions/halo/tools.ts";
+import { piRootOf } from "../extensions/chassis/layout.ts";
+import { isTall } from "../extensions/chassis/messages.ts";
+import { countLines, makeRenderers, SPECS } from "../extensions/chassis/tools.ts";
 
 initTheme("dark", false);
 
@@ -98,7 +98,7 @@ test("isTall: a block is tall, a one-line row with its blank lead is not, a fail
 	assert.equal(isTall({ render() { throw new Error("x"); } } as any, 80), false);
 });
 
-test("piRootOf: pi's own root behind halo's layout wrapper, or the tui itself when there is none", () => {
+test("piRootOf: pi's own root behind chassis's layout wrapper, or the tui itself when there is none", () => {
 	const original = { children: [{ constructor: { name: "ToolExecutionComponent" } }] };
 	const wrapper: any = { render: () => [] };
 	wrapper[Symbol.for("pi-halo/original-root")] = original;

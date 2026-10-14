@@ -1,5 +1,5 @@
 /**
- * Mutable UI state shared by the halo pieces (one instance per extension runtime).
+ * Mutable UI state shared by the chassis pieces (one instance per extension runtime).
  */
 
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";

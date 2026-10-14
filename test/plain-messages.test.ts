@@ -1,13 +1,13 @@
 /**
- * Custom messages: halo wraps extension notices in a panel with a bar, except the types that
- * draw a plain row of their own. halo lists none itself: extensions add theirs to the shared set.
+ * Custom messages: chassis wraps extension notices in a panel with a bar, except the types that
+ * draw a plain row of their own. chassis lists none itself: extensions add theirs to the shared set.
  */
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { CustomMessageComponent } from "@earendil-works/pi-coding-agent";
-import { installMessageStyle, PLAIN_MESSAGE_TYPES } from "../extensions/halo/messages.ts";
-import { createState } from "../extensions/halo/state.ts";
+import { installMessageStyle, PLAIN_MESSAGE_TYPES } from "../extensions/chassis/messages.ts";
+import { createState } from "../extensions/chassis/state.ts";
 
 const strip = (s: string) => s.replace(/\x1b\[[0-9;:]*m/g, "");
 const theme = {
@@ -25,7 +25,7 @@ function render(customType: string, width = 80): string[] {
 	return new CustomMessageComponent(message, renderer as any).render(width);
 }
 
-test("halo lists no plain message type of its own", () => {
+test("chassis lists no plain message type of its own", () => {
 	assert.equal(PLAIN_MESSAGE_TYPES.size, 0);
 });
 

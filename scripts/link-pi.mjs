@@ -6,8 +6,8 @@
  *
  *   node scripts/link-pi.mjs [TARGET_DIR]
  *
- * TARGET_DIR defaults to this package. A package that layers on halo (such as a brand) runs
- * `node node_modules/pi-halo/scripts/link-pi.mjs .` to link them into its own node_modules.
+ * TARGET_DIR defaults to this package. A package that layers on chassis (such as a brand) runs
+ * `node node_modules/pi-chassis/scripts/link-pi.mjs .` to link them into its own node_modules.
  */
 
 import { existsSync, mkdirSync, readFileSync, readlinkSync, realpathSync, rmSync, statSync, symlinkSync } from "node:fs";

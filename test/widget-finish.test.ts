@@ -9,15 +9,15 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 
-process.env.PI_HALO_STATE = join(mkdtempSync(join(tmpdir(), "halo-")), "state.json");
+process.env.PI_CHASSIS_STATE = join(mkdtempSync(join(tmpdir(), "chassis-")), "state.json");
 // These tests check the Nerd Font glyphs; the plain set has its own tests in icons.test.ts.
-process.env.PI_HALO_ICONS = "nerd";
+process.env.PI_CHASSIS_ICONS = "nerd";
 
-const api = await import("../extensions/halo/api.ts");
-const client = await import("../extensions/halo/client.ts");
-const { renderSidebar } = await import("../extensions/halo/sidebar.ts");
-const { createState } = await import("../extensions/halo/state.ts");
-const { runPaletteValue, paletteItems } = await import("../extensions/halo/commands.ts");
+const api = await import("../extensions/chassis/api.ts");
+const client = await import("../extensions/chassis/client.ts");
+const { renderSidebar } = await import("../extensions/chassis/sidebar.ts");
+const { createState } = await import("../extensions/chassis/state.ts");
+const { runPaletteValue, paletteItems } = await import("../extensions/chassis/commands.ts");
 const { visibleWidth } = await import("@earendil-works/pi-tui");
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -235,7 +235,7 @@ test("sidebar and footer: a widget's statusKeys hide the raw statuses it covers,
 	assert.doesNotMatch(side, /live detail|Running reviewer/, "claimed statuses are not listed");
 	assert.match(side, /LSP/, "an unclaimed status still is");
 
-	const { renderFooter } = await import("../extensions/halo/footer.ts");
+	const { renderFooter } = await import("../extensions/chassis/footer.ts");
 	state.sidebarShown = () => false;
 	const data = { getGitBranch: () => undefined, getExtensionStatuses: () => state.statuses() } as any;
 	const foot = renderFooter(state, theme, data, 200).map(strip).join("\n");
@@ -287,7 +287,7 @@ test("the AWS widget shows the AWS logo as its row marker and not beside the acc
 	assert.doesNotMatch(detail, /env keys|profile /, "and the source line (env keys, profile name) is not");
 
 	// With the sidebar hidden the footer still draws the logo in front of the account, with room after it.
-	const { renderFooter } = await import("../extensions/halo/footer.ts");
+	const { renderFooter } = await import("../extensions/chassis/footer.ts");
 	state.sidebarShown = () => false;
 	const data = { getGitBranch: () => undefined, getExtensionStatuses: () => new Map() } as any;
 	const foot = renderFooter(state, theme, data, 200).map(strip).join("\n");
@@ -361,7 +361,7 @@ test("sidebar: the git branch is drawn with the Octicons branch glyph, dirty and
 
 test("footer: with the sidebar hidden the branch has the same glyph as the sidebar, and nothing when the sidebar is shown", async () => {
 	fresh();
-	const { renderFooter } = await import("../extensions/halo/footer.ts");
+	const { renderFooter } = await import("../extensions/chassis/footer.ts");
 	const state = createState();
 	state.git = { branch: "main", dirty: 2, ahead: 0, behind: 1 };
 	const data = { getGitBranch: () => undefined, getExtensionStatuses: () => new Map() } as any;
@@ -373,7 +373,7 @@ test("footer: with the sidebar hidden the branch has the same glyph as the sideb
 	state.sidebarShown = () => true;
 	assert.ok(!renderFooter(state, theme, data, 160).map(strip).join("\n").includes("main"), "the sidebar shows the branch, so the footer leaves it out");
 
-	// Branch from pi's own footer data when halo has not read git yet.
+	// Branch from pi's own footer data when chassis has not read git yet.
 	state.sidebarShown = () => false;
 	state.git = undefined;
 	const viaPi = renderFooter(state, theme, { ...data, getGitBranch: () => "release" }, 160).map(strip).join("\n");

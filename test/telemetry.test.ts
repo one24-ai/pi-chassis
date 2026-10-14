@@ -4,11 +4,11 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { icon } from "../extensions/halo/icons.ts";
-import { fmtCost, formatTelemetry, MIN_TPS_TOKENS, TELEMETRY_ICONS, TelemetryTracker, type Telemetry } from "../extensions/halo/telemetry.ts";
+import { icon } from "../extensions/chassis/icons.ts";
+import { fmtCost, formatTelemetry, MIN_TPS_TOKENS, TELEMETRY_ICONS, TelemetryTracker, type Telemetry } from "../extensions/chassis/telemetry.ts";
 
 // These tests check the Nerd Font glyphs; the plain set has its own tests in icons.test.ts.
-process.env.PI_HALO_ICONS = "nerd";
+process.env.PI_CHASSIS_ICONS = "nerd";
 
 const strip = (s: string) => s.replace(/\x1b\[[0-9;:]*m/g, "");
 const theme = { fg: (_c: string, t: string) => t } as any;

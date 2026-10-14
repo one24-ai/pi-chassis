@@ -11,32 +11,33 @@ import { join } from "node:path";
 import { afterEach, beforeEach, test } from "node:test";
 import { visibleWidth } from "@earendil-works/pi-tui";
 
-const dir = mkdtempSync(join(tmpdir(), "halo-icons-"));
-process.env.PI_HALO_STATE = join(dir, "state.json");
+const dir = mkdtempSync(join(tmpdir(), "chassis-icons-"));
+process.env.PI_CHASSIS_STATE = join(dir, "state.json");
+delete process.env.PI_CHASSIS_ICONS;
 delete process.env.PI_HALO_ICONS;
 
-const api = await import("../extensions/halo/api.ts");
-const { resetBrand, setBrand } = await import("../extensions/halo/brand.ts");
-const I = await import("../extensions/halo/icons.ts");
-const { modePill } = await import("../extensions/halo/prompt-row.ts");
-const { renderSidebar } = await import("../extensions/halo/sidebar.ts");
-const { renderFooter } = await import("../extensions/halo/footer.ts");
-const { formatTelemetry } = await import("../extensions/halo/telemetry.ts");
-const { createState } = await import("../extensions/halo/state.ts");
-const { TOOL_ICONS, SPECS, makeRenderers } = await import("../extensions/halo/tools.ts");
+const api = await import("../extensions/chassis/api.ts");
+const { resetBrand, setBrand } = await import("../extensions/chassis/brand.ts");
+const I = await import("../extensions/chassis/icons.ts");
+const { modePill } = await import("../extensions/chassis/prompt-row.ts");
+const { renderSidebar } = await import("../extensions/chassis/sidebar.ts");
+const { renderFooter } = await import("../extensions/chassis/footer.ts");
+const { formatTelemetry } = await import("../extensions/chassis/telemetry.ts");
+const { createState } = await import("../extensions/chassis/state.ts");
+const { TOOL_ICONS, SPECS, makeRenderers } = await import("../extensions/chassis/tools.ts");
 
 const strip = (s: string) => s.replace(/\x1b\[[0-9;:]*m/g, "");
 const theme = { fg: (_c: string, t: string) => t, bold: (t: string) => t, bg: (_c: string, t: string) => t, getColorMode: () => "truecolor" } as any;
 const PUA = /[\uE000-\uF8FF\u{F0000}-\u{FFFFD}]/u;
 
 beforeEach(() => {
-	delete process.env.PI_HALO_ICONS;
+	delete process.env.PI_CHASSIS_ICONS;
 	I.resetIconSetting();
 	resetBrand();
-	writeFileSync(process.env.PI_HALO_STATE!, "{}");
+	writeFileSync(process.env.PI_CHASSIS_STATE!, "{}");
 });
 afterEach(() => {
-	delete process.env.PI_HALO_ICONS;
+	delete process.env.PI_CHASSIS_ICONS;
 	I.resetIconSetting();
 	resetBrand();
 });
@@ -55,16 +56,16 @@ test("the default is plain, and the environment, the user's setting and the bran
 	assert.equal(I.iconSet(), "plain", "the user's setting beats the brand");
 	assert.equal(I.iconSource(), "setting");
 
-	process.env.PI_HALO_ICONS = "nerd";
+	process.env.PI_CHASSIS_ICONS = "nerd";
 	assert.equal(I.iconSet(), "nerd", "the environment beats the setting");
 	assert.equal(I.iconSource(), "env");
 
-	process.env.PI_HALO_ICONS = "bogus";
+	process.env.PI_CHASSIS_ICONS = "bogus";
 	assert.equal(I.iconSet(), "plain", "an unknown value is ignored");
 });
 
 test("the setting is read from and saved to the state file, keeping its other keys", () => {
-	const p = process.env.PI_HALO_STATE!;
+	const p = process.env.PI_CHASSIS_STATE!;
 	writeFileSync(p, JSON.stringify({ disabledWidgets: ["aws"], icons: "nerd" }));
 	I.resetIconSetting();
 	assert.equal(I.iconSet(), "nerd");
@@ -110,21 +111,21 @@ test("the tool icons are distinct in both sets", () => {
 });
 
 test("usageIcon: filled in eighths with a Nerd Font, a blank slot without one", () => {
-	process.env.PI_HALO_ICONS = "nerd";
+	process.env.PI_CHASSIS_ICONS = "nerd";
 	assert.equal(I.usageIcon(0), "\u{F0766}");
 	assert.equal(I.usageIcon(50), String.fromCodePoint(0xf0a9d + 4));
 	assert.equal(I.usageIcon(100), String.fromCodePoint(0xf0a9d + 8));
 	assert.equal(I.usageIcon(undefined), "\u{F0766}");
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	for (const p of [0, 13, 50, 100, undefined]) assert.equal(I.usageIcon(p), I.ICONS.usage.plain);
 	assert.equal(visibleWidth(I.usageIcon(50)), 1, "the slot keeps its column");
 });
 
 test("resolveIcon: pairs pick their side; a bare string loses private-use characters without a Nerd Font", () => {
-	process.env.PI_HALO_ICONS = "nerd";
+	process.env.PI_CHASSIS_ICONS = "nerd";
 	assert.equal(I.resolveIcon("\u{F0B58}"), "\u{F0B58}");
 	assert.equal(I.resolveIcon({ nerd: "\u{F0B58}", plain: "G" }), "\u{F0B58}");
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	assert.equal(I.resolveIcon("\u{F0B58}"), undefined, "a lone private-use glyph is dropped");
 	assert.equal(I.resolveIcon("\u{F0B58} "), undefined, "so is one followed by a blank");
 	assert.equal(I.resolveIcon("\u{F0B58}x"), "x", "other characters stay");
@@ -136,9 +137,9 @@ test("resolveIcon: pairs pick their side; a bare string loses private-use charac
 });
 
 test("safeGlyph keeps a brand's own glyph with a Nerd Font and swaps it for a dot without one", () => {
-	process.env.PI_HALO_ICONS = "nerd";
+	process.env.PI_CHASSIS_ICONS = "nerd";
 	assert.equal(I.safeGlyph("\u{E00B}"), "\u{E00B}");
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	assert.equal(I.safeGlyph("\u{E00B}"), "\u25CF");
 	assert.equal(I.safeGlyph("A"), "A", "a plain letter is kept");
 	assert.equal(I.safeGlyph("\u{E00B}", "*"), "*");
@@ -167,7 +168,7 @@ function stateWith(extra: Record<string, unknown> = {}) {
 }
 
 test("plain set: the sidebar, footer, pill, tool rows and telemetry contain no private-use glyph", () => {
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	const reg = api.getRegistry();
 	for (const e of reg.widgets.values()) if (e.timer) clearInterval(e.timer);
 	reg.widgets.clear();
@@ -206,7 +207,7 @@ test("the plain set lays out like the nerd one: same row count, label column and
 	api.registerWidget(pi, { id: "mcp", title: "MCP", render: () => ({ text: "3/3", level: "ok" }) });
 	api.registerWidget(pi, { id: "ic", title: "Icon", icon: { nerd: "\u{F0B58}", plain: "G" }, render: () => ({ text: "v" }) });
 	const col = (set: string) => {
-		process.env.PI_HALO_ICONS = set;
+		process.env.PI_CHASSIS_ICONS = set;
 		const lines = renderSidebar(stateWith(), theme, 48, 40, "1.0.0").map(strip);
 		const at = (re: RegExp) => lines.find((l) => re.test(l))!;
 		// Columns in cells, not string indexes: a Nerd glyph is two UTF-16 units but one cell.
@@ -223,31 +224,31 @@ test("the plain set lays out like the nerd one: same row count, label column and
 });
 
 test("the mode pill: half-block caps and just the label in the plain set, round caps and an icon in the nerd set", () => {
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	assert.equal(strip(modePill(theme, "build")), "\u2590BUILD \u258C");
 	assert.equal(strip(modePill(theme, "plan")), "\u2590PLAN \u258C");
-	process.env.PI_HALO_ICONS = "nerd";
+	process.env.PI_CHASSIS_ICONS = "nerd";
 	assert.equal(strip(modePill(theme, "build")), "\u{E0B6}\u{F06A9} BUILD \u{E0B4}");
 });
 
 test("telemetry in the plain set has no leading icons and no stray spaces", () => {
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	const line = formatTelemetry({ tps: 42.3, ttftMs: 1100, totalMs: 4800, stallMs: 0, stallCount: 0, inputTokens: 100, outputTokens: 90, cacheReadTokens: 0, costUsd: 0.031 } as any, theme);
 	assert.equal(line, "42.3 tok/s · ttft 1.1s · 4.8s · ↑100 ↓90 · $0.031");
 	assert.ok(!/^ | {2}/.test(line));
 });
 
 test("a tool row without an icon has no leading gap", () => {
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	const r = makeRenderers(SPECS.read!, () => "/repo");
 	const text = strip(r.renderCall({ path: "src/a.ts" }, theme, {}).render(80).join("\n"));
 	assert.match(text, /^ \u2192 Read/, "one space of indent, the arrow, a space, the title");
-	process.env.PI_HALO_ICONS = "nerd";
+	process.env.PI_CHASSIS_ICONS = "nerd";
 	assert.match(strip(r.renderCall({ path: "src/a.ts" }, theme, {}).render(80).join("\n")), /^ \u{F09EE} Read/u);
 });
 
 test("the AWS footer names the service in words when there is no logo", async () => {
-	process.env.PI_HALO_ICONS = "plain";
+	process.env.PI_CHASSIS_ICONS = "plain";
 	const reg = api.getRegistry();
 	for (const e of reg.widgets.values()) if (e.timer) clearInterval(e.timer);
 	reg.widgets.clear();
@@ -266,7 +267,7 @@ test("the AWS footer names the service in words when there is no logo", async ()
 	const view = reg.widgets.get("aws")!.spec.render({ theme, ctx: undefined, width: 80 })!;
 	assert.equal(I.resolveIcon(view.icon), undefined, "no icon in the plain set, not even a blank one");
 	assert.equal(view.label, "AWS");
-	process.env.PI_HALO_ICONS = "nerd";
+	process.env.PI_CHASSIS_ICONS = "nerd";
 	assert.match(strip(renderFooter(state, theme, data, 200).join("\n")), /\u{F0EF} {2}\d{12}/u, "with the logo: two spaces, as before");
 	delete process.env.AWS_ACCESS_KEY_ID;
 	delete process.env.AWS_REGION;
@@ -287,7 +288,7 @@ test("Nerd Font code points appear in icons.ts and nowhere else in the extension
 	const escapes = /\\u\{?(?:[Ee][0-9A-Fa-f]{3}|[Ff][0-7][0-9A-Fa-f]{2}|[Ff]8[0-9A-Fa-f]{2})\}?|\\u\{[Ff][0-9A-Fa-f]{4}\}/;
 	const offenders: string[] = [];
 	for (const f of sources(root)) {
-		if (f.endsWith(join("halo", "icons.ts"))) continue;
+		if (f.endsWith(join("chassis", "icons.ts"))) continue;
 		readFileSync(f, "utf8").split("\n").forEach((line, i) => {
 			if (/^\s*(\*|\/\/|\/\*)/.test(line)) return; // comments and docs may show a glyph
 			if (PUA.test(line) || escapes.test(line)) offenders.push(`${f.slice(root.length + 1)}:${i + 1}`);

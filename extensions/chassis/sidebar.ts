@@ -15,8 +15,8 @@
  *    • MCP   6/6
  *    • LSP   idle
  *
- *    ~/git/pi-halo
- *    ● pi 1.1.0 · halo 0.1.0  · build
+ *    ~/git/pi-chassis
+ *    ● pi 1.1.0 · chassis 0.1.0  · build
  *
  * In fullscreen it sits in an HStack next to pi's layout root (see layout.ts), so it spans the
  * terminal height; a component only reports its own lines, so the panel is padded to that height.
@@ -24,7 +24,7 @@
 
 import type { Theme } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
-import { haloVersion } from "./version.ts";
+import { chassisVersion } from "./version.ts";
 import { claimedStatusKeys, detailWidget, renderWidget, widgetError, widgetsFor } from "./api.ts";
 import { icon, leadIcon, resolveIcon, usageIcon } from "./icons.ts";
 import { activeProviderStatus, claimedProviderKeys, providerDisplayName, providerMeters } from "./provider-view.ts";
@@ -255,7 +255,7 @@ export function renderSidebar(state: UiState, theme: Theme, width: number, heigh
 	const sameLine = gitPart && visibleWidth(dirLine) + 2 + visibleWidth(gitPart) <= inner;
 	const locLines = !gitPart ? [dirLine] : sameLine ? [`${dirLine}  ${gitPart}`] : [dirLine, gitPart];
 	const mode = state.mode === "plan" ? planColor(theme, "plan") : primary(theme, "build");
-	const footer = [...locLines, "", `${brandLine(theme, piVersion, haloVersion())}  ${muted("·")} ${mode}`];
+	const footer = [...locLines, "", `${brandLine(theme, piVersion, chassisVersion())}  ${muted("·")} ${mode}`];
 
 	const rows = Math.max(height, 1);
 	const usable = rows - PAD_Y * 2;

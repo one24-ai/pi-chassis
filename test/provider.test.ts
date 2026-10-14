@@ -6,16 +6,16 @@
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import { registerProviderStatus } from "../extensions/halo/client.ts";
-import { renderFooter } from "../extensions/halo/footer.ts";
-import { getProviderStatus, providerStatusKeys, resetProviderStatus } from "../extensions/halo/provider.ts";
-import { ICONS, usageIcon } from "../extensions/halo/icons.ts";
-import { providerFooterText, providerMeters } from "../extensions/halo/provider-view.ts";
-import { renderSidebar } from "../extensions/halo/sidebar.ts";
-import { createState } from "../extensions/halo/state.ts";
+import { registerProviderStatus } from "../extensions/chassis/client.ts";
+import { renderFooter } from "../extensions/chassis/footer.ts";
+import { getProviderStatus, providerStatusKeys, resetProviderStatus } from "../extensions/chassis/provider.ts";
+import { ICONS, usageIcon } from "../extensions/chassis/icons.ts";
+import { providerFooterText, providerMeters } from "../extensions/chassis/provider-view.ts";
+import { renderSidebar } from "../extensions/chassis/sidebar.ts";
+import { createState } from "../extensions/chassis/state.ts";
 
 // These tests check the Nerd Font glyphs; the plain set has its own tests in icons.test.ts.
-process.env.PI_HALO_ICONS = "nerd";
+process.env.PI_CHASSIS_ICONS = "nerd";
 
 const strip = (s: string) => s.replace(/\x1b\[[0-9;:]*m/g, "");
 const theme = { fg: (_c: string, t: string) => t, bold: (t: string) => t, getColorMode: () => "truecolor" } as any;

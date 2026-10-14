@@ -16,8 +16,8 @@
 import { randomUUID } from "node:crypto";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
-import { registerWidget } from "../../halo/api.ts";
-import { ICONS } from "../../halo/icons.ts";
+import { registerWidget } from "../../chassis/api.ts";
+import { ICONS } from "../../chassis/icons.ts";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -60,7 +60,7 @@ function requestStatus(pi: ExtensionAPI, params: Record<string, unknown> = {}): 
 			const r = raw as { success?: boolean; data?: unknown } | undefined;
 			resolve(r?.success ? r.data : undefined);
 		});
-		pi.events.emit(REQUEST, { version: 1, requestId, method: "status", params, source: { extension: "pi-halo" } });
+		pi.events.emit(REQUEST, { version: 1, requestId, method: "status", params, source: { extension: "pi-chassis" } });
 	});
 }
 

@@ -11,7 +11,7 @@
  *
  * Generic: any git remote, any host the gh or glab CLI is signed in to. The commands show up in
  * the command palette like any slash command. The flows are in flows.ts; this file only connects
- * them to pi. `/git off` switches the commands off (saved in halo.json) and `/git on` restores them.
+ * them to pi. `/git off` switches the commands off (saved in chassis.json) and `/git on` restores them.
  *
  * Results are also passed to the model on its next turn (a hidden message with the outcome and a
  * fresh repository status), so it never relies on a `git status` from before the command.

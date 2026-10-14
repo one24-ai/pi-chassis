@@ -1,7 +1,7 @@
 /**
- * A package that does not depend on pi-halo registers a widget and tool rows through the globals
+ * A package that does not depend on pi-chassis registers a widget and tool rows through the globals
  * alone: Symbol.for("pi-halo/registry") with an apiVersion check, then register(pi, spec, ctx) from
- * its session_start handler. Nothing here imports halo's client; the example in the README is this
+ * its session_start handler. Nothing here imports chassis's client; the example in the README is this
  * code. Run with: pnpm test
  */
 
@@ -11,11 +11,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 
-process.env.PI_HALO_STATE = join(mkdtempSync(join(tmpdir(), "halo-")), "state.json");
+process.env.PI_CHASSIS_STATE = join(mkdtempSync(join(tmpdir(), "chassis-")), "state.json");
 
-const api = await import("../extensions/halo/api.ts");
-const { renderSidebar } = await import("../extensions/halo/sidebar.ts");
-const { createState } = await import("../extensions/halo/state.ts");
+const api = await import("../extensions/chassis/api.ts");
+const { renderSidebar } = await import("../extensions/chassis/sidebar.ts");
+const { createState } = await import("../extensions/chassis/state.ts");
 
 const strip = (s: string) => s.replace(/\x1b\[[0-9;:]*m/g, "");
 const theme = { fg: (_c: string, t: string) => t, bold: (t: string) => t, bg: (_c: string, t: string) => t, getColorMode: () => "truecolor" } as any;
@@ -48,14 +48,14 @@ function reset(): void {
 }
 
 /**
- * The whole integration of a package that does not import pi-halo: nothing but globalThis. This is
+ * The whole integration of a package that does not import pi-chassis: nothing but globalThis. This is
  * the code shown in the README, with a recall widget as the example.
  */
 function recallPackage(pi: any, saved: string[], clicked: string[]) {
 	let recalled = { n: 2, of: 9, chars: 840, budget: 2000 };
 	const state: { handle?: { refresh(): void; dispose(): void }; offRows?: () => void } = {};
 	pi.on("session_start", async (_e: unknown, ctx: any) => {
-		// All extensions have loaded now. Halo absent (or too old): show nothing.
+		// All extensions have loaded now. Chassis absent (or too old): show nothing.
 		const host = (globalThis as any)[Symbol.for("pi-halo/registry")];
 		if (!host || typeof host.register !== "function" || !(host.apiVersion >= 1)) return;
 		state.handle?.dispose();
@@ -121,7 +121,7 @@ test("a package registers a section widget through the raw globals, from session
 	pkg.state.offRows?.();
 });
 
-test("the ctx passed to register starts the widget's first update even before halo has a session", async () => {
+test("the ctx passed to register starts the widget's first update even before chassis has a session", async () => {
 	reset();
 	api.installHost();
 	const host = (globalThis as any)[Symbol.for("pi-halo/registry")];
@@ -133,17 +133,17 @@ test("the ctx passed to register starts the widget's first update even before ha
 	reset();
 });
 
-test("without halo the package registers nothing and does not fail", async () => {
+test("without chassis the package registers nothing and does not fail", async () => {
 	reset();
 	delete (globalThis as any)[Symbol.for("pi-halo/registry")];
 	const pi = fakePi();
 	recallPackage(pi, [], []);
 	await pi.fire("session_start", { cwd: "/repo", ui: {} });
-	assert.equal((globalThis as any)[Symbol.for("pi-halo/registry")], undefined, "it did not create halo's registry");
+	assert.equal((globalThis as any)[Symbol.for("pi-halo/registry")], undefined, "it did not create chassis's registry");
 	api.getRegistry(); // later tests expect it to exist
 });
 
-test("a halo with an older apiVersion is ignored, not called", async () => {
+test("a chassis with an older apiVersion is ignored, not called", async () => {
 	reset();
 	const reg = api.getRegistry();
 	reg.apiVersion = 0;

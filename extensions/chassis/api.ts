@@ -5,7 +5,7 @@
  * (sidebar section, footer segment, or both) from its `slots`, orders it by `order`, and refreshes
  * it on `refreshMs` or when the widget calls `handle.refresh()`.
  *
- *     import { registerWidget } from "../halo/api.ts";
+ *     import { registerWidget } from "../chassis/api.ts";
  *
  *     registerWidget(pi, {
  *       id: "deploy",
@@ -19,13 +19,13 @@
  *
  * The registry lives on globalThis because pi loads every extension file in its own module scope
  * (jiti, moduleCache off), so a plain module-level Map would give each extension its own copy.
- * Widgets registered before halo loads are kept and shown once it starts.
+ * Widgets registered before chassis loads are kept and shown once it starts.
  *
  * Plain `ctx.ui.setStatus()` from other extensions still works: the TUI shows those statuses as
  * footer segments too, unless a registered widget claims the same key (`statusKey`).
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import type { ExtensionAPI, ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
@@ -203,14 +203,14 @@ export interface ToolRowResult {
 }
 
 /**
- * How halo draws the rows of a tool that belongs to another extension: one line per call
+ * How chassis draws the rows of a tool that belongs to another extension: one line per call
  * ("<icon> <title> <describe>" on the left, `summarize` on the right) and, when the row is opened
  * with ctrl+o, the lines `expand` returns.
  *
  * `args` and `result` come from the model and the tool, so treat them as untrusted and possibly
  * partial: a call is drawn while its arguments are still streaming. Every string a spec returns is
  * cleaned before it is drawn (escape sequences, control characters and bidi controls removed, line
- * breaks turned into spaces; SGR colour from `theme` is kept), and a spec that throws makes halo
+ * breaks turned into spaces; SGR colour from `theme` is kept), and a spec that throws makes chassis
  * draw that call with the tool's own renderer instead.
  */
 export interface ToolRowSpec {
@@ -250,25 +250,25 @@ export interface ToolRowGroup {
 	specs: Map<string, ToolRowSpec>;
 }
 
-/** Shared state between halo and widget extensions. */
+/** Shared state between chassis and widget extensions. */
 export interface Registry {
 	widgets: Map<string, RegistryEntry>;
-	/** Set by halo while a session runs. */
+	/** Set by chassis while a session runs. */
 	ctx: ExtensionContext | undefined;
-	/** Set by halo: asks the TUI to repaint. */
+	/** Set by chassis: asks the TUI to repaint. */
 	requestRender: () => void;
-	/** Subscribers to registry changes (halo's renderers). */
+	/** Subscribers to registry changes (chassis's renderers). */
 	listeners: Set<() => void>;
 	/** Bumped on every change, so renderers can cache. */
 	version: number;
 	/** Widget ids the user switched off (persisted, see `/widgets`). */
 	disabled: Set<string>;
-	/** Set by halo's `installHost()`: the version of this API. Absent when halo isn't loaded. */
+	/** Set by chassis's `installHost()`: the version of this API. Absent when chassis isn't loaded. */
 	apiVersion?: number;
 	/**
 	 * Set by `installHost()`: what client.ts calls to register a widget with the host. `ctx` is
 	 * optional: a caller inside a `session_start` handler passes the handler's context, so the
-	 * widget's first `update` and its timer start even if halo's own handler has not run yet.
+	 * widget's first `update` and its timer start even if chassis's own handler has not run yet.
 	 */
 	register?: (pi: ExtensionAPI, spec: WidgetSpec, ctx?: ExtensionContext) => WidgetHandle;
 	/** Set by `installHost()`: the version of the tool row API. Absent when the host predates it, so a client can feature-detect. */
@@ -285,7 +285,7 @@ export const API_VERSION = 1;
 /** Version of the tool row API (`registerToolRows`). Bumped on a breaking change to it or to ToolRowSpec. */
 export const TOOL_ROWS_VERSION = 1;
 
-/** A registration made (through client.ts) before halo had loaded. */
+/** A registration made (through client.ts) before chassis had loaded. */
 export interface PendingRegistration {
 	pi: ExtensionAPI;
 	spec: WidgetSpec;
@@ -293,7 +293,7 @@ export interface PendingRegistration {
 	attach(handle: WidgetHandle): void;
 }
 
-/** Tool rows registered (through client.ts or the raw protocol) before halo had loaded. */
+/** Tool rows registered (through client.ts or the raw protocol) before chassis had loaded. */
 export interface PendingToolRows {
 	specs: ToolRowSpecs;
 	/** The registrant's id, as in `ToolRowsOptions`. */
@@ -337,7 +337,7 @@ export function drainPending(): void {
 }
 
 /**
- * Called once by halo when it loads: announces the host (so client.ts registers straight into
+ * Called once by chassis when it loads: announces the host (so client.ts registers straight into
  * the registry) and takes over widgets that were queued before it loaded.
  */
 export function installHost(): void {
@@ -349,9 +349,29 @@ export function installHost(): void {
 	drainPending();
 }
 
-/** Where the disabled list is stored. PI_HALO_STATE overrides it (used by tests). */
+let migrated = false;
+
+/**
+ * Where the settings file is stored. PI_CHASSIS_STATE overrides it (used by tests); PI_HALO_STATE,
+ * its name under pi-halo, still works when PI_CHASSIS_STATE is unset. The first time the default
+ * path is used and only the pi-halo file (halo.json) exists, it is copied to chassis.json so the
+ * user's settings carry over. halo.json is left in place.
+ */
 export function statePath(): string {
-	return process.env.PI_HALO_STATE ?? join(process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi", "agent"), "halo.json");
+	const override = process.env.PI_CHASSIS_STATE ?? process.env.PI_HALO_STATE;
+	if (override) return override;
+	const dir = process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi", "agent");
+	const path = join(dir, "chassis.json");
+	if (!migrated) {
+		migrated = true;
+		const legacy = join(dir, "halo.json");
+		try {
+			if (!existsSync(path) && existsSync(legacy)) copyFileSync(legacy, path);
+		} catch {
+			// settings start fresh; nothing else depends on the copy
+		}
+	}
+	return path;
 }
 
 function loadDisabled(): Set<string> {
@@ -394,7 +414,7 @@ export function getRegistry(): Registry {
 		version: 0,
 		disabled: loadDisabled(),
 	};
-	// A registry created by an older halo in the same process lacks newer fields.
+	// A registry created by an older chassis in the same process lacks newer fields.
 	g[KEY]!.disabled ??= loadDisabled();
 	return g[KEY]!;
 }
@@ -419,21 +439,21 @@ export function toolRowBroken(spec: ToolRowSpec): boolean {
 	return (toolRowFailures.get(spec) ?? 0) >= TOOL_ROW_FAILURE_LIMIT;
 }
 
-/** Whether `spec` has the shape halo needs: a string title, functions to describe and summarize, and `expand` a function if given. */
+/** Whether `spec` has the shape chassis needs: a string title, functions to describe and summarize, and `expand` a function if given. */
 function isToolRowSpec(spec: unknown): spec is ToolRowSpec {
 	const s = spec as Partial<ToolRowSpec> | null;
 	return !!s && typeof s === "object" && typeof s.title === "string" && typeof s.describe === "function" && typeof s.summarize === "function" && (s.expand === undefined || typeof s.expand === "function");
 }
 
 /**
- * Register halo-styled rows for tools that belong to another extension, by tool name. Returns a
+ * Register chassis-styled rows for tools that belong to another extension, by tool name. Returns a
  * function that removes them (calling it twice is harmless).
  *
  * The rows are looked up when a call is drawn, so it does not matter whether the extension that
- * owns the tool, the one registering the rows or halo loads first. A call already on screen keeps
+ * owns the tool, the one registering the rows or chassis loads first. A call already on screen keeps
  * the renderer it was created with.
  *
- * halo's own rows for pi's built-in tools (read, write, edit, bash, grep, find, ls) always win: a
+ * chassis's own rows for pi's built-in tools (read, write, edit, bash, grep, find, ls) always win: a
  * spec registered under one of those names is never used. For any other name the most recently
  * registered spec wins, and removing it brings back the one before it. An entry is used only if
  * it has a string `title`, function `describe` and `summarize`, and `expand` is a function when
@@ -558,9 +578,9 @@ function stopTimer(entry: RegistryEntry): void {
  * Register (or replace) a widget. Returns a handle for on-demand refresh and removal.
  *
  * Pass `pi` so the widget's timers follow the session lifecycle: they start on session_start and
- * stop on session_shutdown. The widget itself stays registered across /reload of halo.
+ * stop on session_shutdown. The widget itself stays registered across /reload of chassis.
  *
- * Registering from inside a `session_start` handler (as a package that does not import halo does)
+ * Registering from inside a `session_start` handler (as a package that does not import chassis does)
  * misses that session's own `session_start` event for the widget, so pass the handler's `ctx`.
  */
 export function registerWidget(pi: ExtensionAPI, spec: WidgetSpec, ctx?: ExtensionContext): WidgetHandle {
@@ -579,7 +599,7 @@ export function registerWidget(pi: ExtensionAPI, spec: WidgetSpec, ctx?: Extensi
 	};
 	listen(pi.on("session_start", async (_e, ctx) => {
 		if (reg.widgets.get(spec.id) !== entry) return;
-		// halo may not have set reg.ctx yet (load order), so use this ctx for the first update.
+		// chassis may not have set reg.ctx yet (load order), so use this ctx for the first update.
 		reg.ctx ??= ctx;
 		startTimer(reg, entry);
 		runUpdate(reg, entry);

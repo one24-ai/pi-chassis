@@ -5,7 +5,7 @@
  *
  * It uses only two terminal standards and no OS commands: BEL (0x07) and the OSC 0 title. What the
  * terminal does with them is its own setting (a taskbar flash, a tab badge, a sound, or nothing).
- * Runs shorter than the threshold stay quiet, and `/halo alert off` switches it off.
+ * Runs shorter than the threshold stay quiet, and `/chassis alert off` switches it off.
  *
  * The setting lives in the same state file as the disabled widgets (`alert`: `{ enabled, seconds }`).
  */

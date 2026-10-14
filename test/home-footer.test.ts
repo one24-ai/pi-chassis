@@ -2,12 +2,12 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { renderHomeFooter } from "../extensions/halo/home.ts";
-import { ICONS } from "../extensions/halo/icons.ts";
-import { createState } from "../extensions/halo/state.ts";
+import { renderHomeFooter } from "../extensions/chassis/home.ts";
+import { ICONS } from "../extensions/chassis/icons.ts";
+import { createState } from "../extensions/chassis/state.ts";
 
 // These tests check the Nerd Font glyphs; the plain set has its own tests in icons.test.ts.
-process.env.PI_HALO_ICONS = "nerd";
+process.env.PI_CHASSIS_ICONS = "nerd";
 
 const theme = { fg: (c: string, t: string) => `<${c}>${t}</${c}>`, bold: (t: string) => t } as any;
 const strip = (s: string) => s.replace(/<\/?[a-zA-Z]+>/g, "");

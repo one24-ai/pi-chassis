@@ -9,7 +9,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { installToolRenderers } from "../extensions/halo/tools.ts";
+import { installToolRenderers } from "../extensions/chassis/tools.ts";
 
 const BUILT_IN = ["read", "bash", "edit", "write", "grep", "find", "ls"];
 
@@ -31,18 +31,18 @@ test("installToolRenderers draws every built-in tool through the resolver and re
 	const sentinel = { renderCall() {}, renderResult() {} };
 	for (const name of BUILT_IN) {
 		const got = resolvers[0](name, () => sentinel);
-		assert.ok(got && got !== sentinel, `${name} is drawn by halo`);
+		assert.ok(got && got !== sentinel, `${name} is drawn by chassis`);
 		assert.equal(got.renderShell, "self", `${name} draws its own frame`);
 		assert.equal(typeof got.renderCall, "function");
 		assert.equal(typeof got.renderResult, "function");
 		assert.equal(got.execute, undefined, `${name}: nothing but renderers, so pi's own tool runs it`);
 		assert.equal(got.parameters, undefined);
 	}
-	assert.equal(resolvers[0]("powershell", () => sentinel), sentinel, "tools halo has no row for fall through");
+	assert.equal(resolvers[0]("powershell", () => sentinel), sentinel, "tools chassis has no row for fall through");
 });
 
 test("tools.ts no longer re-registers the built-in tools or reads settings at load", () => {
-	const src = readFileSync(new URL("../extensions/halo/tools.ts", import.meta.url), "utf8");
+	const src = readFileSync(new URL("../extensions/chassis/tools.ts", import.meta.url), "utf8");
 	assert.doesNotMatch(src, /\.registerTool\(/);
 	assert.doesNotMatch(src, /getSettings/);
 	assert.doesNotMatch(src, /create(Read|Bash|Edit|Write|Grep|Find|Ls)ToolDefinition/);

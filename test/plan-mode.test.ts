@@ -5,9 +5,9 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { installModes, MODE_ENTRY } from "../extensions/halo/modes.ts";
-import { explainBlockedCommand, isReadOnlyCommand } from "../extensions/halo/readonly-command.ts";
-import { createState } from "../extensions/halo/state.ts";
+import { installModes, MODE_ENTRY } from "../extensions/chassis/modes.ts";
+import { explainBlockedCommand, isReadOnlyCommand } from "../extensions/chassis/readonly-command.ts";
+import { createState } from "../extensions/chassis/state.ts";
 
 const ALLOWED = [
 	"cat a.txt", "head -n 5 a.txt", "tail -f log", "ls -la", "ls 2>/dev/null", "ls > /dev/null 2>&1", "ls &> /dev/null", "ls 2>&1 | head",
@@ -112,7 +112,7 @@ function setup(initialTools = ["read", "bash", "edit", "write", "mcp__search"]) 
 		entries,
 		handlers,
 		tools: () => [...active].sort(),
-		/** Something other than halo turns a tool on (an MCP server that finished connecting). */
+		/** Something other than chassis turns a tool on (an MCP server that finished connecting). */
 		activate: (name: string) => void active.push(name),
 		/** Simulates switching to a session branch that holds the given mode entries. */
 		restoreTo: (...modeSeq: string[]) => {

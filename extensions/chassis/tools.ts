@@ -10,7 +10,7 @@
  * a tool are drawn without touching the tool: pi's own definitions for read, bash, edit, write,
  * grep, find and ls, with their settings and the active tool set, stay as they are. Tools that
  * belong to other extensions are drawn the same way when that extension registered a row spec for
- * them (`registerToolRows` in api.ts); halo knows no tool but pi's built-in ones by name.
+ * them (`registerToolRows` in api.ts); chassis knows no tool but pi's built-in ones by name.
  *
  * Everything shown comes from tool arguments and results, which a file, a web page or a model can
  * influence, so each piece of text is cleaned of escape sequences and control characters before it
@@ -486,7 +486,7 @@ export function makeRenderers(spec: Spec, getCwd: () => string) {
 	};
 }
 
-/** The most lines a registered spec's `expand` may show before halo cuts the rest. */
+/** The most lines a registered spec's `expand` may show before chassis cuts the rest. */
 const ROW_EXPAND_LINES = 120;
 
 /** Text from another extension: escape sequences, control characters and bidi controls removed, one line, SGR kept. */
@@ -541,7 +541,7 @@ function stacked(first: Component, second: Component): Component {
  * When the tool has no renderers of its own, the error goes to pi, which draws its plain fallback.
  *
  * One limit: pi reads `renderShell` once, when it creates the row, and cannot change it later. A
- * call that falls back after it started is therefore still inside halo's own shell (`"self"`);
+ * call that falls back after it started is therefore still inside chassis's own shell (`"self"`);
  * only a call that is resolved when the spec is already known to be broken gets the tool's shell.
  */
 function rowRenderers(row: ToolRowSpec, next: () => ToolRenderers | undefined): ToolRenderers | undefined {
@@ -599,11 +599,11 @@ function rowRenderers(row: ToolRowSpec, next: () => ToolRenderers | undefined): 
 }
 
 /**
- * Draw the built-in tools with halo's rows, and any other tool whose extension registered a row
+ * Draw the built-in tools with chassis's rows, and any other tool whose extension registered a row
  * spec (`registerToolRows`). A resolver answers for these
  * names and passes every other tool to `next()`, so pi keeps the tool definitions, their settings
  * (shell prefix, shell path, image resizing) and which tools are active; only the drawing changes.
- * The resolver wins over a tool's own renderers. Halo's own specs win over a registered spec of
+ * The resolver wins over a tool's own renderers. Chassis's own specs win over a registered spec of
  * the same name. The registered specs are looked up when a call first appears, so load order does
  * not matter. A spec that has failed on several finished calls is skipped and the tool is drawn by
  * its own renderers, shell included.

@@ -116,8 +116,8 @@ const identity = (o: unknown) => {
 
 /**
  * Custom message types that draw themselves as a plain row, like a tool row, and so get no panel
- * or bar from halo. Extensions in other module scopes add theirs through the shared set, with
- * `globalThis[Symbol.for("halo.plainMessageTypes")]`, so no import of halo is needed.
+ * or bar from chassis. Extensions in other module scopes add theirs through the shared set, with
+ * `globalThis[Symbol.for("halo.plainMessageTypes")]`, so no import of chassis is needed.
  */
 export const PLAIN_MESSAGE_TYPES: Set<string> = (() => {
 	const g = globalThis as Record<symbol, unknown>;
@@ -392,7 +392,7 @@ export function isHiddenThoughtOnly(c: any): boolean {
 
 /**
  * pi-tui components don't keep a parent pointer, so the chat container is found once from the
- * TUI tree by halo (see setChatContainer) and used for sibling lookups.
+ * TUI tree by chassis (see setChatContainer) and used for sibling lookups.
  */
 let chatContainer: { children: unknown[] } | undefined;
 export function setChatContainer(c: { children: unknown[] } | undefined): void {

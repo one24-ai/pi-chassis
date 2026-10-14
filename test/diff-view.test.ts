@@ -10,8 +10,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import { formatWidgetList, widgetInfo } from "../extensions/halo/api.ts";
-import { resetBrand, setBrand } from "../extensions/halo/brand.ts";
+import { formatWidgetList, widgetInfo } from "../extensions/chassis/api.ts";
+import { resetBrand, setBrand } from "../extensions/chassis/brand.ts";
 import { loadBranch, loadChanges, parseStatus, parseUnifiedDiff } from "../extensions/diff/git-diff.ts";
 import { addDiffAction, diffHost, openDiff } from "../extensions/diff/host.ts";
 import { buildBody, clean, cutLeft, paletteFor, renderBodyRow, renderFileRow } from "../extensions/diff/render.ts";
@@ -112,7 +112,7 @@ after(() => {
 	for (const r of roots) rmSync(r, { recursive: true, force: true });
 });
 function repo(): string {
-	const d = mkdtempSync(join(tmpdir(), "halo-diff-"));
+	const d = mkdtempSync(join(tmpdir(), "chassis-diff-"));
 	roots.push(d);
 	const run = (...a: string[]) => execFileSync("git", a, { cwd: d, stdio: "pipe" });
 	run("init", "-q", "-b", "main");
@@ -158,7 +158,7 @@ test("loadChanges: a repository with no commits, and a directory that is not a r
 	put(d, "loose.txt", "x\n");
 	const l = await loadChanges(d);
 	assert.deepEqual(l.files.map((f) => [f.path, f.code, f.added]), [["first.txt", "A ", 1], ["loose.txt", "??", 1]]);
-	const plain = mkdtempSync(join(tmpdir(), "halo-nogit-"));
+	const plain = mkdtempSync(join(tmpdir(), "chassis-nogit-"));
 	roots.push(plain);
 	assert.equal((await loadChanges(plain)).error, "Not a git repository");
 	assert.equal((await loadBranch(plain)).error, "Not a git repository");
@@ -200,7 +200,7 @@ test("loadChanges and loadBranch: diff.noprefix, diff.mnemonicPrefix and diff.ex
 test("loadBranch: the base is the remote's default branch, as /pr finds it (develop, trunk), and the tab says which", async () => {
 	for (const name of ["develop", "trunk", "main"]) {
 		const d = repo();
-		const remote = mkdtempSync(join(tmpdir(), "halo-diff-remote-"));
+		const remote = mkdtempSync(join(tmpdir(), "chassis-diff-remote-"));
 		roots.push(remote);
 		execFileSync("git", ["init", "-q", "--bare", "-b", name], { cwd: remote });
 		sh(d, "checkout", "-q", "-b", name);
@@ -220,7 +220,7 @@ test("loadBranch: the base is the remote's default branch, as /pr finds it (deve
 
 test("loadBranch: a stale local main is not used when the remote has a newer one", async () => {
 	const d = repo();
-	const remote = mkdtempSync(join(tmpdir(), "halo-diff-remote-"));
+	const remote = mkdtempSync(join(tmpdir(), "chassis-diff-remote-"));
 	roots.push(remote);
 	execFileSync("git", ["init", "-q", "--bare", "-b", "main"], { cwd: remote });
 	put(d, "base.txt", "base\n"); sh(d, "add", "."); sh(d, "commit", "-q", "-m", "base");
@@ -636,7 +636,7 @@ test("openDiff: false when the diff view is not loaded, the host's answer when i
 });
 
 test("/widgets list shows the diff view's row as a command when it has no slot", async () => {
-	const { registerWidget } = await import("../extensions/halo/api.ts");
+	const { registerWidget } = await import("../extensions/chassis/api.ts");
 	registerWidget({ on: () => () => {} } as any, { id: "diff-test", slots: [], render: () => undefined });
 	const text = formatWidgetList(widgetInfo().filter((w) => w.id === "diff-test"));
 	assert.match(text, /diff-test \[ok\] · command/);
@@ -707,7 +707,7 @@ test("openDiff and openChanges pass on false when the host showed nothing", asyn
 
 test("the diff extension reports false when nothing was shown: no UI, view switched off, already open; true after a real show", async () => {
 	const { default: install } = await import("../extensions/diff/index.ts");
-	const { getRegistry } = await import("../extensions/halo/api.ts");
+	const { getRegistry } = await import("../extensions/chassis/api.ts");
 	const host = diffHost();
 	const savedOpen = host.open;
 	const savedOpenChanges = host.openChanges;

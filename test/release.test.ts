@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 const { cutChangelog, nextVersion } = await import("../scripts/release.mjs");
-const URL_ = "https://github.com/example/pi-halo";
+const URL_ = "https://github.com/example/pi-chassis";
 
 test("nextVersion follows semver", () => {
 	assert.equal(nextVersion("0.1.0", "patch"), "0.1.1");

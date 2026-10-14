@@ -21,11 +21,16 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # The tests and type check link the installed pi's packages; install the pi version halo targets.
-      - run: pnpm add --global @earendil-works/pi-coding-agent@1.1.0
+      # The tests and type check link the installed pi's packages; install the pi version chassis targets.
+      - run: pnpm add --global @earendil-works/pi-coding-agent@1.2.0
       - run: pnpm check
       - name: The packed tarball has the compiled exports
         run: |
           pnpm pack
-          tar tzf pi-halo-*.tgz | grep -q '^package/dist/halo/client.js$'
-          tar tzf pi-halo-*.tgz | grep -q '^package/dist/halo/client.d.ts$'
+          tar tzf pi-chassis-*.tgz | grep -q '^package/dist/chassis/client.js$'
+          tar tzf pi-chassis-*.tgz | grep -q '^package/dist/chassis/client.d.ts$'
+      - name: The pi-halo bridge bundles this build and points at its extensions
+        run: |
+          node scripts/build-halo-bridge.mjs
+          node -e 'const p=require("./compat/pi-halo/package.json"); const fs=require("fs"); for (const e of p.pi.extensions) if (!fs.existsSync("compat/pi-halo/"+e)) { console.error("missing " + e); process.exit(1); }'
+          (cd compat/pi-halo && node -e 'import("pi-halo/client").then((m) => { if (typeof m.registerWidget !== "function") process.exit(1); })')

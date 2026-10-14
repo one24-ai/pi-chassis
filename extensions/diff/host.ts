@@ -7,7 +7,7 @@
  * switched off in /widgets, reports that by returning false. So does one that could not be shown:
  * there is no interactive UI, or the view is already open.
  *
- * This file imports only types, so it has no files to bring along; the halo client re-exports it.
+ * This file imports only types, so it has no files to bring along; the chassis client re-exports it.
  */
 
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";

@@ -4,7 +4,7 @@
  *    󰚩 BUILD   Sonnet 4.5  Anthropic  medium
  *   ^^^^^^^^^^^
  *   a filled pill in the mode colour (brand primary for build, brand plan colour for plan) with the
- *   mode's icon, then the model, the provider, and the thinking level in halo's own colour for it.
+ *   mode's icon, then the model, the provider, and the thinking level in chassis's own colour for it.
  *
  * Pure functions over a theme, so the row can be tested without an editor. With a Nerd Font the pill
  * caps are the Powerline round caps and the mode has an icon; without one the caps are half blocks
@@ -39,7 +39,7 @@ export function modePill(theme: Theme, mode: Mode): string {
 }
 
 /**
- * One colour per thinking level, halo's own and the same under every theme and brand. It warms
+ * One colour per thinking level, chassis's own and the same under every theme and brand. It warms
  * up with the effort: grey when off, then blue, violet and amber, and red only at the top, so a red
  * label means the most expensive setting and nothing else. Bright enough for the dark panel shades;
  * under a light theme thinkingLabel darkens the same hues.

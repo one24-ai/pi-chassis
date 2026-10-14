@@ -25,8 +25,8 @@ import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import type { ExtensionAPI, Theme } from "@earendil-works/pi-coding-agent";
-import { registerWidget } from "../../halo/api.ts";
-import { type IconLike, ICONS, iconSet } from "../../halo/icons.ts";
+import { registerWidget } from "../../chassis/api.ts";
+import { type IconLike, ICONS, iconSet } from "../../chassis/icons.ts";
 import { type AwsContext, EXPIRY_SOON_MS, formatRemaining, awsExpiresIn, resolveAwsContext, roleTone } from "./resolve.ts";
 
 /** pi.events channel other extensions emit on after changing AWS env vars. */

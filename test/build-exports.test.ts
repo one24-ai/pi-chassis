@@ -1,6 +1,6 @@
 /**
  * The package's exports resolve to compiled JavaScript with type declarations, so a consumer can
- * import pi-halo from plain Node (no TypeScript loader) and type-check against it. Builds into a
+ * import pi-chassis from plain Node (no TypeScript loader) and type-check against it. Builds into a
  * temporary directory, then imports every export from there. Run with: pnpm test
  */
 
@@ -25,7 +25,7 @@ test("every export points at dist JavaScript with a declaration file next to it"
 });
 
 test("the build compiles, rewrites .ts imports, and every export loads in plain Node", async () => {
-	const out = mkdtempSync(join(tmpdir(), "halo-build-"));
+	const out = mkdtempSync(join(tmpdir(), "chassis-build-"));
 	const tsc = join(root, "node_modules", "typescript", "bin", "tsc");
 	execFileSync(process.execPath, [tsc, "-p", join(root, "tsconfig.build.json"), "--outDir", out], { cwd: root, stdio: "pipe" });
 	for (const [name, target] of Object.entries<any>(pkg.exports)) {

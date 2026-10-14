@@ -18,7 +18,7 @@
  * repositories with scripted answers.
  */
 
-import { stripEscapes } from "../halo/sanitize.ts";
+import { stripEscapes } from "../chassis/sanitize.ts";
 import { createRequest, findForge, findUrl } from "./forge.ts";
 import { aheadBehind, changedPaths, compareRef, currentBranch, defaultBranch, isRepo, localBranches, refExists, remoteName, remoteHost, repoStatus, type RepoStatus, saveIndex } from "./repo.ts";
 import { failure, git, gitOut, PLAIN_DIFF, type RunResult } from "./run.ts";

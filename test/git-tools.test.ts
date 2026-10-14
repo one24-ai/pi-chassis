@@ -21,7 +21,7 @@ import { cleanMessage, commitPrompt, parsePrArgs, plainText, splitPr, subject, t
 const sh = (cwd: string, ...args: string[]) => execFileSync("git", args, { cwd, encoding: "utf8", env: { ...process.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_SYSTEM: "/dev/null" } }).trim();
 
 function repo(): string {
-	const dir = mkdtempSync(join(tmpdir(), "halo-git-"));
+	const dir = mkdtempSync(join(tmpdir(), "chassis-git-"));
 	sh(dir, "init", "-q", "-b", "main");
 	sh(dir, "config", "user.email", "t@example.com");
 	sh(dir, "config", "user.name", "T");
@@ -35,7 +35,7 @@ function repo(): string {
 /** A repo with a bare remote called origin, main published. */
 function withRemote(): { dir: string; remote: string } {
 	const dir = repo();
-	const remote = mkdtempSync(join(tmpdir(), "halo-git-remote-"));
+	const remote = mkdtempSync(join(tmpdir(), "chassis-git-remote-"));
 	sh(remote, "init", "-q", "--bare", "-b", "main");
 	sh(dir, "remote", "add", "origin", remote);
 	sh(dir, "push", "-q", "-u", "origin", "main");
@@ -174,7 +174,7 @@ test("commit: nothing to commit, outside a repository, and a failing hook", asyn
 	await commit(clean.e, "x");
 	assert.equal(clean.last(), "Nothing to commit.");
 
-	const outside = env(mkdtempSync(join(tmpdir(), "halo-nogit-")));
+	const outside = env(mkdtempSync(join(tmpdir(), "chassis-nogit-")));
 	await commit(outside.e, "x");
 	assert.equal(outside.last(), "Not inside a git repository.");
 
@@ -215,7 +215,7 @@ test("push: declining pushes nothing; behind the upstream refuses; no remote ref
 	assert.notEqual(sh(remote, "log", "-1", "--format=%s", "main"), "add c");
 
 	// another clone pushes first, so this one is behind
-	const other = mkdtempSync(join(tmpdir(), "halo-git-other-"));
+	const other = mkdtempSync(join(tmpdir(), "chassis-git-other-"));
 	sh(other, "clone", "-q", remote, ".");
 	sh(other, "config", "user.email", "o@example.com");
 	sh(other, "config", "user.name", "O");
@@ -293,7 +293,7 @@ test("merge: a conflict lists the files and stops; /merge abort restores the tre
 
 /** A fake gh on PATH that records its arguments and body, and prints a URL. */
 function fakeGh(behaviour: "ok" | "fail" = "ok"): { dir: string; log: string; restore: () => void } {
-	const dir = mkdtempSync(join(tmpdir(), "halo-fakegh-"));
+	const dir = mkdtempSync(join(tmpdir(), "chassis-fakegh-"));
 	const log = join(dir, "calls.log");
 	writeFileSync(
 		join(dir, "gh"),
@@ -484,7 +484,7 @@ test("report: a push says where the branch went, and a hook-declined push quotes
 
 test("report: a real fetch-first rejection quotes the rejected line, not git's generic trailer", async () => {
 	const { dir, remote } = withRemote();
-	const other = mkdtempSync(join(tmpdir(), "halo-git-other-"));
+	const other = mkdtempSync(join(tmpdir(), "chassis-git-other-"));
 	sh(other, "clone", "-q", remote, ".");
 	sh(other, "config", "user.email", "o@example.com");
 	sh(other, "config", "user.name", "O");
@@ -510,7 +510,7 @@ test("report: a rejected push with a long remote banner reports the rejection li
 	sh(dir, "commit", "-q", "-m", "add c");
 
 	// A git whose push fails with a long remote banner and then the rejection, as a busy remote does.
-	const bin = mkdtempSync(join(tmpdir(), "halo-fakegit-"));
+	const bin = mkdtempSync(join(tmpdir(), "chassis-fakegit-"));
 	const realGit = execFileSync("sh", ["-c", "command -v git"], { encoding: "utf8" }).trim();
 	const banner = Array.from({ length: 40 }, (_, i) => `remote: ${"banner text ".repeat(10)}${i}`).join("\n");
 	writeFileSync(
@@ -851,9 +851,9 @@ test("report: nothing is sent when the commands are switched off or there is no 
 	const notes: string[] = [];
 	const ctx = (hasUI: boolean) => ({ cwd: dir, hasUI, ui: { notify: (m: string) => void notes.push(m), confirm: async () => true, select: async () => undefined, editor: async (_t: string, prefill?: string) => prefill }, model: undefined });
 
-	const stateFile = join(mkdtempSync(join(tmpdir(), "halo-state-")), "halo.json");
-	const oldState = process.env.PI_HALO_STATE;
-	process.env.PI_HALO_STATE = stateFile;
+	const stateFile = join(mkdtempSync(join(tmpdir(), "chassis-state-")), "chassis.json");
+	const oldState = process.env.PI_CHASSIS_STATE;
+	process.env.PI_CHASSIS_STATE = stateFile;
 	try {
 		writeFileSync(stateFile, JSON.stringify({ git: { enabled: false } }));
 		for (const name of ["commit", "push", "merge", "pr"]) await handlers.get(name)!("x", ctx(true));
@@ -881,8 +881,8 @@ test("report: nothing is sent when the commands are switched off or there is no 
 		assert.match(String(message.content), /^User ran \/commit: committed [0-9a-f]+ "Change a"\nRepository right after the command: branch main, no upstream, working tree clean\.$/);
 		assert.deepEqual(options, { deliverAs: "nextTurn" });
 	} finally {
-		if (oldState === undefined) delete process.env.PI_HALO_STATE;
-		else process.env.PI_HALO_STATE = oldState;
+		if (oldState === undefined) delete process.env.PI_CHASSIS_STATE;
+		else process.env.PI_CHASSIS_STATE = oldState;
 	}
 });
 
@@ -893,14 +893,14 @@ test("describeStatus reads naturally", () => {
 
 test("settings: the git switch defaults on, round-trips, and keeps the other keys in the state file", async () => {
 	const { loadGitEnabled, saveGitEnabled } = await import("../extensions/git/settings.ts");
-	const path = join(mkdtempSync(join(tmpdir(), "halo-set-")), "sub", "halo.json");
+	const path = join(mkdtempSync(join(tmpdir(), "chassis-set-")), "sub", "chassis.json");
 	assert.equal(loadGitEnabled(path), true, "no file means on");
 	assert.equal(saveGitEnabled(false, path), true);
 	assert.equal(loadGitEnabled(path), false);
 	assert.equal(saveGitEnabled(true, path), true);
 	assert.equal(loadGitEnabled(path), true);
 
-	const other = join(mkdtempSync(join(tmpdir(), "halo-set-")), "halo.json");
+	const other = join(mkdtempSync(join(tmpdir(), "chassis-set-")), "chassis.json");
 	writeFileSync(other, JSON.stringify({ disabledWidgets: ["a"], alert: { enabled: false, seconds: 5 } }));
 	saveGitEnabled(false, other);
 	const data = JSON.parse(readFileSync(other, "utf8"));
@@ -967,7 +967,7 @@ test("push: a branch that tracks its own name asks with the exact target too", a
 test("push: a branch that is behind its own origin/<name> refuses, even when it tracks another branch", async () => {
 	const { dir, remote } = branchFromMain();
 	sh(dir, "push", "-q", "origin", "HEAD:refs/heads/feat");
-	const other = mkdtempSync(join(tmpdir(), "halo-git-other-"));
+	const other = mkdtempSync(join(tmpdir(), "chassis-git-other-"));
 	sh(other, "clone", "-q", "-b", "feat", remote, ".");
 	sh(other, "config", "user.email", "o@example.com");
 	sh(other, "config", "user.name", "O");
@@ -1113,7 +1113,7 @@ test("changedPaths lists files inside new directories and a rename once", async 
 
 test("defaultBranch: the remote's HEAD wins, and a remote name with regex characters is plain text", async () => {
 	const dir = repo();
-	const remote = mkdtempSync(join(tmpdir(), "halo-git-remote-"));
+	const remote = mkdtempSync(join(tmpdir(), "chassis-git-remote-"));
 	sh(remote, "init", "-q", "--bare", "-b", "main");
 	sh(dir, "remote", "add", "o.r+g", remote);
 	sh(dir, "push", "-q", "o.r+g", "main", "main:develop");
@@ -1176,7 +1176,7 @@ test("run: a program that outlives its timeout is stopped with its children, and
 
 test("run: exit codes, a missing program, and stderr are reported as before", async () => {
 	assert.deepEqual(await run("sh", ["-c", "echo out; echo err >&2; exit 3"], process.cwd()), { code: 3, stdout: "out\n", stderr: "err\n" });
-	const missing = await run("halo-no-such-program", [], process.cwd());
+	const missing = await run("chassis-no-such-program", [], process.cwd());
 	assert.equal(missing.code, 127);
 	assert.match(missing.stderr, /command not found/);
 });

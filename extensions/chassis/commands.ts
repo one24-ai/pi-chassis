@@ -43,7 +43,7 @@ export function leaderActions(hooks: {
 	return [
 		{ key: "n", label: "New session", run: "/new" },
 		{ key: "l", label: "Sessions", run: "/resume" },
-		{ key: "r", label: "Resume last session", run: "/halo-resume-last" },
+		{ key: "r", label: "Resume last session", run: "/chassis-resume-last" },
 		{ key: "m", label: "Models", run: "/model" },
 		{ key: "t", label: "Themes", run: "/settings" },
 		{ key: "b", label: "Toggle sidebar", run: hooks.toggleSidebar },

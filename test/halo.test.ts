@@ -6,10 +6,10 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { diffStats } from "../extensions/halo/session-info.ts";
-import { fmtTokens, hasOwnColor, sanitize, sanitizeKeepColor } from "../extensions/halo/palette.ts";
-import { filterPalette, fuzzyScore } from "../extensions/halo/commands.ts";
-import { clipTail, lastLine, reducePeek } from "../extensions/halo/peek.ts";
+import { diffStats } from "../extensions/chassis/session-info.ts";
+import { fmtTokens, hasOwnColor, sanitize, sanitizeKeepColor } from "../extensions/chassis/palette.ts";
+import { filterPalette, fuzzyScore } from "../extensions/chassis/commands.ts";
+import { clipTail, lastLine, reducePeek } from "../extensions/chassis/peek.ts";
 import { accountFromAccessKeyId, registerCredentialProcessResolver, resolveAwsContext } from "../extensions/widgets/aws/resolve.ts";
 import { containerLabel, detectContainer } from "../extensions/widgets/container/detect.ts";
 
@@ -101,7 +101,7 @@ test("container detection (moved from container-status.ts)", () => {
 });
 
 test("hidden thinking-only messages render nothing once finished", async () => {
-	const { isHiddenThoughtOnly } = await import("../extensions/halo/messages.ts");
+	const { isHiddenThoughtOnly } = await import("../extensions/chassis/messages.ts");
 	const msg = (content: unknown[], stopReason = "toolUse") => ({ content, stopReason });
 	const base = { isStreaming: false, hideThinkingBlock: true, thinkingVisibilityOverrides: new Map() };
 	const thought = { type: "thinking", thinking: "plan the edit" };
@@ -116,7 +116,7 @@ test("hidden thinking-only messages render nothing once finished", async () => {
 });
 
 test("home screen: tips parse, pi logo grid is 4x4", async () => {
-	const { PI_PIXELS, TIPS, parseTip } = await import("../extensions/halo/home.ts");
+	const { PI_PIXELS, TIPS, parseTip } = await import("../extensions/chassis/home.ts");
 	assert.deepEqual(parseTip("Press {tab} to cycle"), [
 		{ text: "Press ", highlight: false },
 		{ text: "tab", highlight: true },
@@ -128,7 +128,7 @@ test("home screen: tips parse, pi logo grid is 4x4", async () => {
 });
 
 test("fmtAgo", async () => {
-	const { fmtAgo } = await import("../extensions/halo/palette.ts");
+	const { fmtAgo } = await import("../extensions/chassis/palette.ts");
 	assert.equal(fmtAgo(10_000), "just now");
 	assert.equal(fmtAgo(5 * 60_000), "5m ago");
 	assert.equal(fmtAgo(3 * 3_600_000), "3h ago");
@@ -137,7 +137,7 @@ test("fmtAgo", async () => {
 });
 
 test("memoLines reuses restyled lines until pi's lines, width or style change", async () => {
-	const { memoLines } = await import("../extensions/halo/messages.ts");
+	const { memoLines } = await import("../extensions/chassis/messages.ts");
 	const owner = {};
 	let builds = 0;
 	const build = (src: string[]) => () => (builds++, src.map((l) => `|${l}`));

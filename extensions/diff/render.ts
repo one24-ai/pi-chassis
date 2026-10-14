@@ -7,10 +7,10 @@
  * first: a file can hold escape sequences, and they must never reach the terminal.
  */
 
-import { stripEscapes } from "../halo/sanitize.ts";
+import { stripEscapes } from "../chassis/sanitize.ts";
 import type { Theme } from "@earendil-works/pi-coding-agent";
 import { backgroundAnsi, mixColors, parseColor, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
-import { surfaceColor } from "../halo/palette.ts";
+import { surfaceColor } from "../chassis/palette.ts";
 import type { FileDiff, Hunk } from "./git-diff.ts";
 
 /**

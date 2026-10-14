@@ -5,10 +5,10 @@
 
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
-import { getBrand, DEFAULT_BRAND, resetBrand } from "../extensions/halo/brand.ts";
-import { registerBrand } from "../extensions/halo/client.ts";
-import { renderHeader } from "../extensions/halo/header.ts";
-import { brandLine, primary, widgetPaint } from "../extensions/halo/palette.ts";
+import { getBrand, DEFAULT_BRAND, resetBrand } from "../extensions/chassis/brand.ts";
+import { registerBrand } from "../extensions/chassis/client.ts";
+import { renderHeader } from "../extensions/chassis/header.ts";
+import { brandLine, primary, widgetPaint } from "../extensions/chassis/palette.ts";
 
 const strip = (s: string) => s.replace(/\x1b\[[0-9;:]*m/g, "");
 const theme = {

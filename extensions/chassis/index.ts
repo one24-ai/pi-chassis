@@ -1,5 +1,5 @@
 /**
- * halo: an OpenCode-style TUI for pi, with a brand that another package can replace (brand.ts).
+ * chassis: an OpenCode-style TUI for pi, with a brand that another package can replace (brand.ts).
  *
  * Pieces (each in its own file):
  *   layout.ts    right sidebar (fullscreen split, overlay fallback)       ctrl+x b
@@ -15,7 +15,7 @@
  *   telemetry.ts per-run TPS/TTFT/tokens/cost summary
  *   api.ts       the widget registry other extensions use (registerWidget)
  *
- * Commands: /halo [on|off|sidebar|status]
+ * Commands: /chassis [on|off|sidebar|status]
  */
 
 import {
@@ -83,6 +83,8 @@ const BUILTIN_COMMANDS: { name: string; description: string }[] = [
 const LEADER_TIMEOUT_MS = 2000;
 const SIDEBAR_MIN_TERMINAL_WIDTH = 116; // keeps the transcript as wide as it was at the old 42-column sidebar and 110 columns
 const GIT_POLL_MS = 4000;
+
+type CommandSpec = Parameters<ExtensionAPI["registerCommand"]>[1];
 
 export default function (pi: ExtensionAPI) {
 	const state = createState();
@@ -374,7 +376,7 @@ export default function (pi: ExtensionAPI) {
 	};
 
 	pi.registerShortcut("ctrl+alt+b", {
-		description: "halo: toggle sidebar",
+		description: "chassis: toggle sidebar",
 		handler: () => {
 			layout?.toggle();
 			render();
@@ -498,8 +500,8 @@ export default function (pi: ExtensionAPI) {
 	pi.on("session_compact", async () => render());
 	pi.on("session_info_changed", async () => render());
 
-	pi.registerCommand("halo-resume-last", {
-		description: "halo: resume the most recent other session in this directory",
+	const resumeLastCommand: CommandSpec = {
+		description: "chassis: resume the most recent other session in this directory",
 		handler: async (_args, ctx) => {
 			if (!state.lastSession) await refreshLastSession(ctx);
 			const last = state.lastSession;
@@ -509,10 +511,11 @@ export default function (pi: ExtensionAPI) {
 			}
 			await ctx.switchSession(last.path);
 		},
-	});
+	};
+	pi.registerCommand("chassis-resume-last", resumeLastCommand);
 
 	pi.registerCommand("widgets", {
-		description: "halo widgets: /widgets [list|disable ID|enable ID|refresh ID]",
+		description: "chassis widgets: /widgets [list|disable ID|enable ID|refresh ID]",
 		getArgumentCompletions: (prefix) => {
 			const parts = prefix.split(/\s+/);
 			if (parts.length <= 1) {
@@ -533,8 +536,8 @@ export default function (pi: ExtensionAPI) {
 		},
 	});
 
-	pi.registerCommand("halo", {
-		description: "halo: /halo [on|off|sidebar|status|alert [off|on|SECONDS]|icons [nerd|plain|auto]]",
+	const chassisCommand: CommandSpec = {
+		description: "chassis: /chassis [on|off|sidebar|status|alert [off|on|SECONDS]|icons [nerd|plain|auto]]",
 		getArgumentCompletions: (prefix) => {
 			const opts = ["on", "off", "sidebar", "status", "alert", "icons"].filter((o) => o.startsWith(prefix.trim()));
 			return opts.length ? opts.map((o) => ({ value: o, label: o })) : null;
@@ -545,7 +548,7 @@ export default function (pi: ExtensionAPI) {
 				const arg = sub.slice("icons".length).trim();
 				if (arg) {
 					if (arg !== "nerd" && arg !== "plain" && arg !== "auto") {
-						ctx.ui.notify("Usage: /halo icons [nerd|plain|auto]", "warning");
+						ctx.ui.notify("Usage: /chassis icons [nerd|plain|auto]", "warning");
 						return;
 					}
 					const choice = arg === "auto" ? undefined : arg;
@@ -556,8 +559,8 @@ export default function (pi: ExtensionAPI) {
 					render();
 				}
 				const src = iconSource();
-				const why = src === "env" ? " (set by PI_HALO_ICONS, which wins over the saved setting)" : src === "setting" ? "" : src === "brand" ? " (the brand's default)" : " (the default)";
-				ctx.ui.notify(`icons: ${iconSet()}${why}. Nerd needs a Nerd Font in the terminal. /halo icons nerd|plain|auto`, "info");
+				const why = src === "env" ? " (set by PI_CHASSIS_ICONS, which wins over the saved setting)" : src === "setting" ? "" : src === "brand" ? " (the brand's default)" : " (the default)";
+				ctx.ui.notify(`icons: ${iconSet()}${why}. Nerd needs a Nerd Font in the terminal. /chassis icons nerd|plain|auto`, "info");
 				return;
 			}
 			if (sub === "alert" || sub.startsWith("alert ")) {
@@ -565,7 +568,7 @@ export default function (pi: ExtensionAPI) {
 				if (arg) {
 					const change = parseAlertArg(arg);
 					if (!change) {
-						ctx.ui.notify("Usage: /halo alert [off|on|SECONDS]  (for example 45, 90s or 2m)", "warning");
+						ctx.ui.notify("Usage: /chassis alert [off|on|SECONDS]  (for example 45, 90s or 2m)", "warning");
 						return;
 					}
 					alertSettings = { ...alertSettings, ...change };
@@ -577,7 +580,7 @@ export default function (pi: ExtensionAPI) {
 			if (sub === "off") {
 				enabled = false;
 				uninstall(ctx);
-				ctx.ui.notify("halo off for this session. /halo on to restore.", "info");
+				ctx.ui.notify("chassis off for this session. /chassis on to restore.", "info");
 				return;
 			}
 			if (sub === "on") {
@@ -593,9 +596,13 @@ export default function (pi: ExtensionAPI) {
 			}
 			const widgets = [...registry.widgets.keys()].join(", ") || "none";
 			ctx.ui.notify(
-				`halo ${active ? "on" : "off"} · layout ${state.layout} · sidebar ${layout?.isShown() ? "shown" : "hidden"} · mode ${state.mode}\nwidgets: ${widgets}`,
+				`chassis ${active ? "on" : "off"} · layout ${state.layout} · sidebar ${layout?.isShown() ? "shown" : "hidden"} · mode ${state.mode}\nwidgets: ${widgets}`,
 				"info",
 			);
 		},
-	});
+	};
+	pi.registerCommand("chassis", chassisCommand);
+	// The names these commands had as pi-halo, kept so typed habits and keybindings still work.
+	pi.registerCommand("halo", { ...chassisCommand, description: "Renamed to /chassis (this old name still works)" });
+	pi.registerCommand("halo-resume-last", { ...resumeLastCommand, description: "Renamed to /chassis-resume-last (this old name still works)" });
 }
