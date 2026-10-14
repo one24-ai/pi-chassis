@@ -4,6 +4,8 @@ All notable changes to pi-chassis (called pi-halo up to 0.3.0) are listed here. 
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-14
+
 ### Changed
 
 - **Breaking:** pi-halo is now **pi-chassis**. Install `npm:pi-chassis` and import `pi-chassis/client` (and the other exports) instead of `pi-halo/...`. The commands are `/chassis` and `/chassis-resume-last`, the settings file is `~/.pi/agent/chassis.json`, the environment variables are `PI_CHASSIS_ICONS` and `PI_CHASSIS_STATE`, and the brand line reads `chassis X.Y.Z`. See [Moving from pi-halo](README.md#moving-from-pi-halo).
@@ -61,7 +63,8 @@ First public release.
 - Plain and Nerd Font icon sets (`/halo icons`).
 - Sanitizing of untrusted text (file contents, tool output, git and forge output, session names, widget text) before it reaches the terminal.
 
-[Unreleased]: https://github.com/one24-ai/pi-halo/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/one24-ai/pi-chassis/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/one24-ai/pi-chassis/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/one24-ai/pi-halo/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/one24-ai/pi-halo/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/one24-ai/pi-halo/compare/v0.1.1...v0.2.0
