@@ -281,4 +281,4 @@ export type { ProviderMeter, ProviderStatusSpec } from "./provider.ts";
 export type { BrandColors, BrandSpec, BrandSurfaces } from "./brand.ts";
 export type { IconLike } from "./icons.ts";
 export type { ToolRowResult, ToolRowsOptions, ToolRowSpec, ToolRowSpecs } from "./api.ts";
-export type { WidgetAction, WidgetHandle, WidgetSpec, WidgetView, WidgetRenderContext, WidgetSlot, WidgetColor, WidgetLevel } from "./api.ts";
+export type { DetailLine, DetailLink, WidgetAction, WidgetHandle, WidgetSpec, WidgetView, WidgetRenderContext, WidgetSlot, WidgetColor, WidgetLevel } from "./api.ts";

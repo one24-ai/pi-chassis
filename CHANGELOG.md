@@ -4,6 +4,10 @@ All notable changes to pi-chassis (called pi-halo up to 0.3.0) are listed here. 
 
 ## [Unreleased]
 
+### Added
+
+- Detail lines can hold links. A `detail` line may be a list of pieces, each a string or a `{ text, url }` link (the new `DetailLine` and `DetailLink` types, exported from `pi-chassis/client` and `pi-chassis/api`). chassis builds the link itself, and only from a plain https URL (no user name, whitespace or control characters, at most 2048 characters). It shows the label alone when the terminal cannot show links, when the URL is refused, or when the label is empty once cleaned. Text is still stripped of every escape sequence, so a link written into a string, or one that arrives inside a ticket summary or an incident title, never becomes a link. Until now a widget could not show a link in the sidebar at all, because chassis strips escape sequences from widget text.
+
 ## [0.4.0] - 2026-10-14
 
 ### Changed

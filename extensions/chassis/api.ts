@@ -30,7 +30,8 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import type { ExtensionAPI, ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
 import type { IconLike } from "./icons.ts";
-import { scrubText } from "./sanitize.ts";
+import { getCapabilities, hyperlink } from "@earendil-works/pi-tui";
+import { safeLinkUrl, scrubText } from "./sanitize.ts";
 
 /** A render or detail call slower than this counts as a strike against the widget. */
 export const SLOW_RENDER_MS = 50;
@@ -141,8 +142,13 @@ export interface WidgetSpec {
 	cacheKey?: (rc: WidgetRenderContext) => string;
 	/** Return the one-line view, or undefined to hide the widget. */
 	render: (rc: WidgetRenderContext) => WidgetView | undefined;
-	/** Extra sidebar lines under the heading (plain or themed strings). */
-	detail?: (rc: WidgetRenderContext) => string[] | undefined;
+	/**
+	 * Extra sidebar lines under the heading (plain or themed strings). A line can also be a list of
+	 * pieces, each a string or a `{ text, url }` link, for a line that links part of its text; see
+	 * `DetailLine`. A link shows as its label alone where the terminal cannot show links, and is
+	 * left out unless `url` is a plain https URL.
+	 */
+	detail?: (rc: WidgetRenderContext) => DetailLine[] | undefined;
 	/**
 	 * Called when the user clicks a line returned by `detail`, with that line's index. Only the
 	 * lines `detail` returned are clickable, not the heading or an error line. A thrown error or
@@ -162,6 +168,20 @@ export interface WidgetSpec {
 	 */
 	sidebar?: "row" | "section";
 }
+
+/** A link inside a detail line: the visible `text`, and the https `url` it opens. */
+export interface DetailLink {
+	text: string;
+	url: string;
+}
+
+/**
+ * One detail line: a string, or a list of pieces. A piece is a string or a `DetailLink`. Links only
+ * work as pieces: chassis removes every escape sequence from text, so a link written into a string
+ * is shown as its label alone. That keeps text that came from outside (a ticket summary, an
+ * incident title) from drawing a link of its own.
+ */
+export type DetailLine = string | Array<string | DetailLink>;
 
 export interface WidgetHandle {
 	/** Run `update` (if any) and re-render now. */
@@ -717,7 +737,40 @@ function cleanView(view: WidgetView | undefined): WidgetView | undefined {
 }
 
 /** Detail lines cleaned the same way; anything that is not an array of lines yields none. */
-const cleanLines = (lines: unknown): string[] => (Array.isArray(lines) ? lines.map((l) => cleanText(l) ?? "") : []);
+/** Whether the terminal draws OSC 8 links. A failure to find out means no. */
+function terminalLinks(): boolean {
+	try {
+		return getCapabilities().hyperlinks;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * One detail line as a clean string. Every piece of text goes through `cleanText`, so nothing a
+ * widget passes in can add an escape sequence; the only OSC 8 sequences in the result are the ones
+ * built here, from a URL `safeLinkUrl` accepted around a label that is not empty once cleaned.
+ */
+function cleanDetailLine(line: unknown, links: boolean): string {
+	if (!Array.isArray(line)) return cleanText(line) ?? "";
+	let out = "";
+	for (const piece of line) {
+		if (typeof piece === "string") {
+			out += cleanText(piece) ?? "";
+		} else if (piece && typeof piece === "object" && typeof (piece as DetailLink).text === "string") {
+			const label = cleanText((piece as DetailLink).text) ?? "";
+			const url = links ? safeLinkUrl((piece as DetailLink).url) : undefined;
+			out += url && label.trim() ? hyperlink(label, url) : label;
+		}
+	}
+	return out;
+}
+
+const cleanLines = (lines: unknown): string[] => {
+	if (!Array.isArray(lines)) return [];
+	const links = terminalLinks();
+	return lines.map((l) => cleanDetailLine(l, links));
+};
 
 /**
  * Render a widget without letting it throw: a failure is recorded on the widget and returned as

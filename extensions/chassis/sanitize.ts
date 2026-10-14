@@ -82,3 +82,27 @@ export function sanitizeLines(text: unknown): string {
 		.replace(/\r\n?|[\u2028\u2029]/g, "\n")
 		.replace(CONTROL_KEEP_BREAKS, "");
 }
+
+/** Longest link target kept. Longer ones are refused rather than cut, since a cut URL goes elsewhere. */
+const MAX_LINK_URL = 2048;
+
+/**
+ * The URL to put in a link, or undefined if it is not safe to. Only a plain https URL passes: a host,
+ * no user name or password, no whitespace, control character, bidi control or backslash anywhere in
+ * it, at most 2048 characters. It comes back in the form `URL` writes it (scheme and host in lower
+ * case), so what is checked is what is sent.
+ */
+export function safeLinkUrl(url: unknown): string | undefined {
+	if (typeof url !== "string" || url.length === 0 || url.length > MAX_LINK_URL) return undefined;
+	if (/[\u0000-\u0020\u007f-\u009f\\\u061c\u200e\u200f\u2028\u2029\u202a-\u202e\u2066-\u2069]/.test(url)) return undefined;
+	if (!/^https:\/\/[^/?#]/i.test(url)) return undefined;
+	let parsed: URL;
+	try {
+		parsed = new URL(url);
+	} catch {
+		return undefined;
+	}
+	if (parsed.protocol !== "https:" || parsed.username || parsed.password || !parsed.hostname) return undefined;
+	const out = parsed.href;
+	return out.length <= MAX_LINK_URL && !/[\u0000-\u0020\u007f-\u009f]/.test(out) ? out : undefined;
+}
