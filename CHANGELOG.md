@@ -4,6 +4,10 @@ All notable changes to pi-chassis (called pi-halo up to 0.3.0) are listed here. 
 
 ## [Unreleased]
 
+### Changed
+
+- `docs/widgets.md` now says where `onDetailClick` works: only in fullscreen mode with the split sidebar. In regular mode, and in the pop-up sidebar that stands in for the split one, clicks do not reach the widget, so anything the user must reach by clicking needs a second way, such as a palette action.
+
 ## [0.5.1] - 2026-10-14
 
 ### Changed
