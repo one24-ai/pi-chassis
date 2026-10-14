@@ -1,7 +1,7 @@
 /**
  * A package that does not depend on pi-chassis registers a widget and tool rows through the globals
  * alone: Symbol.for("pi-halo/registry") with an apiVersion check, then register(pi, spec, ctx) from
- * its session_start handler. Nothing here imports chassis's client; the example in the README is this
+ * its session_start handler. Nothing here imports chassis's client; the example in docs/widgets.md is this
  * code. Run with: pnpm test
  */
 
@@ -49,7 +49,7 @@ function reset(): void {
 
 /**
  * The whole integration of a package that does not import pi-chassis: nothing but globalThis. This is
- * the code shown in the README, with a recall widget as the example.
+ * the code shown in docs/widgets.md, with a recall widget as the example.
  */
 function recallPackage(pi: any, saved: string[], clicked: string[]) {
 	let recalled = { n: 2, of: 9, chars: 840, budget: 2000 };
