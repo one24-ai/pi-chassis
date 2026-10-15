@@ -122,7 +122,7 @@ export interface WidgetSpec {
 	icon?: IconLike;
 	/** Where it shows. Default ["footer", "sidebar"]. */
 	slots?: WidgetSlot[];
-	/** Lower comes first. Default 100. Built-ins: container 0, aws 20, mcp 30, subagents 35, todo 40 and session-todos 50. */
+	/** Lower comes first. Default 100. Built-ins: container 0, mcp 30, subagents 35, todo 40 and session-todos 50. */
 	order?: number;
 	/** Re-render interval while a session runs. Omit for event-driven widgets. */
 	refreshMs?: number;

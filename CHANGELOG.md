@@ -4,6 +4,20 @@ All notable changes to pi-chassis (called pi-halo up to 0.3.0) are listed here. 
 
 ## [Unreleased]
 
+### Added
+
+- `docs/status-widgets.md`: recipes for building a status widget from what you already have, an environment variable, a file another tool keeps current, a count with detail lines, a linked line, another extension's `setStatus` line, and a value that needs a command (run from a palette action, never on a timer). Each recipe was type-checked against the real API and run through the sidebar renderer. It also lists the rules that keep a status widget safe.
+
+### Removed
+
+- **Breaking:** the built-in AWS widget is gone. It moved to pi-riot-tools, along with the Riot credential tooling around it. Anything that relied on it must change:
+  - The sidebar and footer no longer show an AWS row unless a package supplies one.
+  - The `pi-chassis/aws` export is removed, and so is `pi-halo/aws` on the pi-halo bridge. `registerCredentialProcessResolver`, `resolveAwsContext`, `resolveRegion`, `parseAwsConfig`, `accountFromAccessKeyId`, `roleTone`, `awsExpiresIn`, `formatRemaining`, `formatAwsStatus`, `EXPIRY_SOON_MS`, `SESSION_EXPIRY_VAR` and the types `AwsContext`, `CredentialProcessCall`, `CredentialProcessResult` and `CredentialProcessResolver` have no replacement in pi-chassis. The registry key `Symbol.for("pi-halo/aws-credential-process-resolvers")` is no longer read.
+  - `/widgets disable aws` and an `aws` entry in `disabledWidgets` do nothing now. The entry is harmless.
+  - The event `aws-status:refresh` and the variable `PI_AWS_SESSION_EXPIRATION` are no longer read by pi-chassis. A package that registers its own `aws` widget keeps using them.
+  - The icon table loses `widgetAws` and `widgetAwsFooter`.
+  - To get the same row, use the AWS widget in pi-riot-tools, or write one with the recipes in `docs/status-widgets.md`.
+
 ### Changed
 
 - `docs/widgets.md` now says where `onDetailClick` works: only in fullscreen mode with the split sidebar. In regular mode, and in the pop-up sidebar that stands in for the split one, clicks do not reach the widget, so anything the user must reach by clicking needs a second way, such as a palette action.
