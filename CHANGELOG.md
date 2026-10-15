@@ -4,6 +4,8 @@ All notable changes to pi-chassis (called pi-halo up to 0.3.0) are listed here. 
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-15
+
 ### Added
 
 - `docs/status-widgets.md`: recipes for building a status widget from what you already have, an environment variable, a file another tool keeps current, a count with detail lines, a linked line, another extension's `setStatus` line, and a value that needs a command (run from a palette action, never on a timer). Each recipe was type-checked against the real API and run through the sidebar renderer. It also lists the rules that keep a status widget safe.
@@ -93,7 +95,8 @@ First public release.
 - Plain and Nerd Font icon sets (`/halo icons`).
 - Sanitizing of untrusted text (file contents, tool output, git and forge output, session names, widget text) before it reaches the terminal.
 
-[Unreleased]: https://github.com/one24-ai/pi-chassis/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/one24-ai/pi-chassis/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/one24-ai/pi-chassis/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/one24-ai/pi-chassis/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/one24-ai/pi-chassis/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/one24-ai/pi-chassis/compare/v0.3.0...v0.4.0
