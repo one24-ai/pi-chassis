@@ -175,7 +175,6 @@ test("plain set: the sidebar, footer, pill, tool rows and telemetry contain no p
 	// Built-in widgets, with their real icons.
 	const pi = { on: () => () => {}, events: { on: () => () => {} } } as any;
 	return Promise.all([
-		import("../extensions/widgets/aws/index.ts"),
 		import("../extensions/widgets/container/index.ts"),
 		import("../extensions/widgets/mcp/index.ts"),
 		import("../extensions/widgets/session-todos/index.ts"),
@@ -245,32 +244,6 @@ test("a tool row without an icon has no leading gap", () => {
 	assert.match(text, /^ \u2192 Read/, "one space of indent, the arrow, a space, the title");
 	process.env.PI_CHASSIS_ICONS = "nerd";
 	assert.match(strip(r.renderCall({ path: "src/a.ts" }, theme, {}).render(80).join("\n")), /^ \u{F09EE} Read/u);
-});
-
-test("the AWS footer names the service in words when there is no logo", async () => {
-	process.env.PI_CHASSIS_ICONS = "plain";
-	const reg = api.getRegistry();
-	for (const e of reg.widgets.values()) if (e.timer) clearInterval(e.timer);
-	reg.widgets.clear();
-	process.env.AWS_ACCESS_KEY_ID = "ASIAIOSFODNN7EXAMPLE";
-	process.env.AWS_REGION = "us-west-2";
-	const { default: installAws } = await import("../extensions/widgets/aws/index.ts");
-	installAws({ on: () => () => {}, events: { on: () => () => {} }, getSettings: () => ({}) } as any);
-	await reg.widgets.get("aws")!.spec.update!(undefined as any);
-	const state = stateWith();
-	state.sidebarShown = () => false;
-	const data = { getGitBranch: () => undefined, getExtensionStatuses: () => new Map() } as any;
-	const foot = strip(renderFooter(state, theme, data, 200).join("\n"));
-	assert.match(foot, /AWS \d{12}/, "the word takes the logo's place, one space before the account");
-	assert.ok(!/AWS {2}\d{12}/.test(foot), "and there is no extra space for an overhang that is not there");
-	// The footer right-aligns with padding, so look at the widget's own view for a stray space.
-	const view = reg.widgets.get("aws")!.spec.render({ theme, ctx: undefined, width: 80 })!;
-	assert.equal(I.resolveIcon(view.icon), undefined, "no icon in the plain set, not even a blank one");
-	assert.equal(view.label, "AWS");
-	process.env.PI_CHASSIS_ICONS = "nerd";
-	assert.match(strip(renderFooter(state, theme, data, 200).join("\n")), /\u{F0EF} {2}\d{12}/u, "with the logo: two spaces, as before");
-	delete process.env.AWS_ACCESS_KEY_ID;
-	delete process.env.AWS_REGION;
 });
 
 // ---- where the code points live ------------------------------------------------------------------

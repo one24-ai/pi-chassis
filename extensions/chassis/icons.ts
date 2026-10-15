@@ -71,8 +71,6 @@ export const ICONS = {
 	// diff view
 	diff: { nerd: "\u{F02A2}", plain: "" }, // source-branch
 	// widgets. A section heading or a row marker with no plain glyph falls back to the row bullet.
-	widgetAws: { nerd: "\u{F0EF}", plain: "" }, // fontawesome aws: the logo, about 1.9 cells of ink
-	widgetAwsFooter: { nerd: "\u{F0EF} ", plain: "" }, // the footer copy carries a space for the overhang
 	widgetContainer: { nerd: "\u{F0868}", plain: "" }, // docker
 	widgetK8s: { nerd: "\u{F10FE}", plain: "" }, // kubernetes
 	widgetMcp: { nerd: "\u{F06A5}", plain: "" }, // server-network

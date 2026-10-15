@@ -33,10 +33,6 @@
       "types": "./icons.d.ts",
       "default": "./icons.js"
     },
-    "./aws": {
-      "types": "./aws.d.ts",
-      "default": "./aws.js"
-    },
     "./provider": {
       "types": "./provider.d.ts",
       "default": "./provider.js"

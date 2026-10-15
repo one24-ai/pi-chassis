@@ -41,10 +41,6 @@
       "types": "./dist/chassis/icons.d.ts",
       "default": "./dist/chassis/icons.js"
     },
-    "./aws": {
-      "types": "./dist/widgets/aws/resolve.d.ts",
-      "default": "./dist/widgets/aws/resolve.js"
-    },
     "./provider": {
       "types": "./dist/chassis/provider.d.ts",
       "default": "./dist/chassis/provider.js"
@@ -55,7 +51,6 @@
     "extensions": [
       "./extensions/chassis/index.ts",
       "./extensions/widgets/container/index.ts",
-      "./extensions/widgets/aws/index.ts",
       "./extensions/widgets/mcp/index.ts",
       "./extensions/widgets/todo/index.ts",
       "./extensions/widgets/session-todos/index.ts",

@@ -11,7 +11,7 @@
  *      Plan     ━━━━━━━━━━━━━━━━━━━  71%
  *      ↑ 38k  ↓ 1.2k  ⟳ 26k      $0.04
  *
- *    • AWS   dev us-west-2
+ *    • Host  devcontainer
  *    • MCP   6/6
  *    • LSP   idle
  *
@@ -40,7 +40,7 @@ export const branchGlyph = (): string => icon("branch");
 export const worktreeTag = (theme: Theme, git: { worktree?: boolean } | undefined): string => (git?.worktree ? theme.fg("accent", ` ${icon("worktree")}`) : "");
 
 /**
- * Between a status row's marker and its label: two spaces, so a wide marker such as the AWS logo
+ * Between a status row's marker and its label: two spaces, so a wide marker such as a brand logo
  * (ink about 1.9 cells wide) still has a gap before the label. Every row in the list uses it, so
  * the label and value columns stay lined up. The footer already has the same gap.
  */

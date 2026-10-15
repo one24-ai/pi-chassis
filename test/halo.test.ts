@@ -1,6 +1,6 @@
 /**
  * Unit tests for the pure parts: palette helpers, palette search,
- * peek phase machine, session-info diff stats, aws resolver, container detection.
+ * peek phase machine, session-info diff stats, container detection.
  * Run: pnpm test  (node --experimental-strip-types --test test/*.test.ts)
  */
 
@@ -10,7 +10,6 @@ import { diffStats } from "../extensions/chassis/session-info.ts";
 import { fmtTokens, hasOwnColor, sanitize, sanitizeKeepColor } from "../extensions/chassis/palette.ts";
 import { filterPalette, fuzzyScore } from "../extensions/chassis/commands.ts";
 import { clipTail, lastLine, reducePeek } from "../extensions/chassis/peek.ts";
-import { accountFromAccessKeyId, registerCredentialProcessResolver, resolveAwsContext } from "../extensions/widgets/aws/resolve.ts";
 import { containerLabel, detectContainer } from "../extensions/widgets/container/detect.ts";
 
 test("sanitize strips control and escape sequences", () => {
@@ -67,22 +66,6 @@ test("peek phase machine", () => {
 	assert.equal(lastLine("a\n  b  c \n\n"), "b c");
 	assert.equal(clipTail("abcdefgh", 5), "…efgh");
 	assert.equal(clipTail("abc", 5), "abc");
-});
-
-test("aws resolver", () => {
-	assert.equal(accountFromAccessKeyId("not-a-key"), undefined);
-	const cfg = "[profile dev]\nrole_arn = arn:aws:iam::123456789012:role/Admin\nregion = us-west-2\n";
-	const c = resolveAwsContext({ AWS_PROFILE: "dev" }, cfg);
-	assert.equal(c?.account, "dev");
-	assert.equal(c?.accountId, "123456789012");
-	assert.equal(c?.role, "Admin");
-	assert.equal(c?.region, "us-west-2");
-	const sso = resolveAwsContext({ AWS_PROFILE: "s" }, "[profile s]\nsso_account_id = 111122223333\nsso_role_name = Dev\nregion = eu-west-1\n");
-	assert.deepEqual([sso?.accountId, sso?.role, sso?.region], ["111122223333", "Dev", "eu-west-1"]);
-	// A credential_process nobody claims is opaque: the profile name stands in for the account.
-	const cfg2 = "[profile tool]\ncredential_process = mytool creds --acct prod\n";
-	assert.equal(resolveAwsContext({ AWS_PROFILE: "tool" }, cfg2)?.account, "tool");
-	assert.equal(resolveAwsContext({}, undefined), undefined);
 });
 
 test("container detection (moved from container-status.ts)", () => {
@@ -152,20 +135,3 @@ test("memoLines reuses restyled lines until pi's lines, width or style change", 
 	assert.deepEqual(memoLines(owner, "s", 100, "plan", ["one", "three"], build([])), ["|one", "|three"]);
 });
 
-test("aws credential_process resolvers: first answer wins, errors are skipped, undo removes", () => {
-	const cfg = "[profile tool]\ncredential_process = /opt/bin/mytool creds --acct prod\n";
-	const env = { AWS_PROFILE: "tool", MYTOOL_REGION: "ap-south-1" };
-	const offBroken = registerCredentialProcessResolver(() => {
-		throw new Error("boom");
-	});
-	const offTool = registerCredentialProcessResolver((call) =>
-		call.bin === "mytool" ? { account: call.args[call.args.indexOf("--acct") + 1], role: "Admin", region: call.env.MYTOOL_REGION } : undefined,
-	);
-	const c = resolveAwsContext(env, cfg);
-	assert.deepEqual([c?.account, c?.role, c?.region, c?.source], ["prod", "Admin", "ap-south-1", "profile tool"]);
-	// An explicit region beats the resolver's.
-	assert.equal(resolveAwsContext({ ...env, AWS_REGION: "us-east-1" }, cfg)?.region, "us-east-1");
-	offTool();
-	offBroken();
-	assert.equal(resolveAwsContext(env, cfg)?.account, "tool");
-});

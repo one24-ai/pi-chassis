@@ -13,7 +13,7 @@ export default function (pi: ExtensionAPI) {
 		id: "builds",
 		title: "Builds",              // sidebar heading
 		slots: ["footer", "sidebar"], // default: both
-		order: 40,                    // container 0, aws 20, mcp 30
+		order: 40,                    // container 0, mcp 30
 		refreshMs: 15_000,            // optional polling
 		update: async (ctx) => {      // optional: fetch slow data here
 			count = 3;
@@ -38,7 +38,7 @@ export default function (pi: ExtensionAPI) {
 
 Install its dependencies (`pnpm install`), then `pi install /path/to/my-widget`.
 
-- Widgets in other extensions should import `client.ts`, not `api.ts`. A package that cannot depend on pi-chassis registers through `globalThis` instead (see [Adding a widget without depending on pi-chassis](#adding-a-widget-without-depending-on-pi-chassis)). It only looks for chassis on `globalThis`, so load order doesn't matter: a widget that registers before chassis loads is queued and taken over when it does. Without chassis installed, the widget falls back to a plain `ctx.ui.setStatus(id, "<icon> <label or title> <text>")` line, polled on `refreshMs` (no detail lines, colours or caching). It also checks the registry's `apiVersion`, so a chassis with an older API is ignored rather than called wrongly. The package exports `./client`, `./api`, `./brand`, `./icons`, `./provider` and `./aws` for use from another package (`./icons` has `iconSet`, `safeGlyph` and the glyph table, for a brand or widget that wants to match the user's icon choice). Built-in widgets in this repo keep importing `api.ts`.
+- Widgets in other extensions should import `client.ts`, not `api.ts`. A package that cannot depend on pi-chassis registers through `globalThis` instead (see [Adding a widget without depending on pi-chassis](#adding-a-widget-without-depending-on-pi-chassis)). It only looks for chassis on `globalThis`, so load order doesn't matter: a widget that registers before chassis loads is queued and taken over when it does. Without chassis installed, the widget falls back to a plain `ctx.ui.setStatus(id, "<icon> <label or title> <text>")` line, polled on `refreshMs` (no detail lines, colours or caching). It also checks the registry's `apiVersion`, so a chassis with an older API is ignored rather than called wrongly. The package exports `./client`, `./api`, `./brand`, `./icons` and `./provider` for use from another package (`./icons` has `iconSet`, `safeGlyph` and the glyph table, for a brand or widget that wants to match the user's icon choice). Built-in widgets in this repo keep importing `api.ts`.
 - An `icon` (on the widget or in the view) is either one string, used as given with a Nerd Font and dropped without one, or `{ nerd, plain }` to give one for each set. A string of ordinary characters such as `"CI"` survives in both. With no icon in the current set, a row shows its level marker or the bullet, and a section heading shows no glyph.
 - `render` returns `{ icon?, label?, text, color?, level? }`, or `undefined` to hide the widget. In the sidebar's status list a `level` shows as a marker: a check (`ok`), warning triangle (`warn`), cross (`error`), minus (`off`) or information circle (`info`), in that level's colour. `label` is shown only in the footer, because the sidebar uses `title` instead.
 - `color` takes theme tokens (`text`, `muted`, `accent`, `success`, `warning`, `error`) the brand colours (`brand`, `brandDark`, `plan`), or any `#RRGGBB` value. If omitted, `level` (`ok`, `warn`, `error`, `off`, `info`) picks the colour.
@@ -50,15 +50,14 @@ Install its dependencies (`pnpm install`), then `pi install /path/to/my-widget`.
 - A `sidebar: "section"` widget with only detail lines can return `{}` from `render`: `text` is optional.
 - `/widgets [list|disable ID|enable ID|refresh ID]` shows each widget's state and switches one off. The disabled list is saved in `~/.pi/agent/chassis.json`.
 - `registerWidget` returns a handle. `refresh()` re-renders on demand, for example from a `pi.events` listener, and `dispose()` removes the widget.
-- `sidebar: "section"` gives a widget its own sidebar section (bold title, value beside it, detail lines as the body) instead of a row in the status list. The `todo` widget uses it. Its optional `icon` goes in front of the title; on a row widget it is the row's marker instead of the bullet (the AWS widget shows the AWS logo there).
+- `sidebar: "section"` gives a widget its own sidebar section (bold title, value beside it, detail lines as the body) instead of a row in the status list. The `todo` widget uses it. Its optional `icon` goes in front of the title; on a row widget it is the row's marker instead of the bullet (a brand logo works well there).
 - Plain `ctx.ui.setStatus(key, text)` from any extension still shows in the footer. A widget whose `id` (or `statusKey`) matches a status key replaces that status, so it doesn't show twice; `statusKeys: [...]` claims several more. The Subagents widget uses it for pi-subagents' slash-command statuses.
 
-`extensions/widgets/` has the built-in widgets, which are also good templates:
+For worked examples that read an environment variable, a file or a command, see [Status widgets from what you already have](status-widgets.md). `extensions/widgets/` has the built-in widgets, which are also good templates:
 
 | Widget | Shows |
 |---|---|
 | `container` | The container, devcontainer or pod name when pi runs inside one |
-| `aws` | AWS account, role and region from env and `~/.aws/config`. The role is green when its name reads read-only and bold in the warning colour when it reads admin or power-user. An extension that changes the AWS env can emit `aws-status:refresh`. Credential tools can be taught with `registerCredentialProcessResolver` (`pi-chassis/aws`) |
 | `mcp` | Connected/enabled MCP servers, and which ones are pending |
 | `todo` | Open items from the repo's `TODO.md` (or `TODO`, `TODO.txt`), sidebar only, hidden when there's none |
 | `session-todos` | The latest todo list a todo-style tool reported in this session, sidebar only, hidden when nothing is open |

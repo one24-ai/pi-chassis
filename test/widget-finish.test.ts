@@ -266,68 +266,6 @@ test("sidebar: a row widget's icon is its marker, in place of the bullet and the
 	assert.ok(row(/acct-2/).includes("•  Plain") && row(/acct-2/).includes("* acct-2"), "a widget without an icon keeps the bullet and the value icon");
 });
 
-test("the AWS widget shows the AWS logo as its row marker and not beside the account", async () => {
-	fresh();
-	process.env.AWS_ACCESS_KEY_ID = "ASIAIOSFODNN7EXAMPLE";
-	process.env.AWS_REGION = "us-west-2";
-	const { default: install } = await import("../extensions/widgets/aws/index.ts");
-	install({ events: { on: () => () => {} }, on: () => {}, getSettings: () => ({}) } as any);
-	const entry = api.getRegistry().widgets.get("aws")!;
-	await entry.spec.update!(undefined as any);
-	const state = createState();
-	state.ctx = { cwd: "/w", model: { provider: "p", id: "m" }, getContextUsage: () => undefined, sessionManager: { getSessionName: () => "d", getBranch: () => [] } } as any;
-	const text = renderSidebar(state, theme, 48, 30, "1.0.0").map(strip);
-	const line = text.find((l) => /AWS\s+\d{12}/.test(l))!;
-	assert.ok(line, "AWS row present");
-	assert.ok(line.includes("\u{F0EF}  AWS"), "the full-size logo, two spaces, then the title");
-	assert.equal((line.match(/\u{F0EF}/gu) ?? []).length, 1, "the logo is not repeated beside the account");
-	assert.ok(!line.includes("•") && !line.includes("\u{F0E0F}"), "no bullet and no md-aws glyph");
-	const detail = text.slice(text.indexOf(line) + 1, text.indexOf(line) + 4).join("\n");
-	assert.match(detail, /region us-west-2/, "the region detail is still there");
-	assert.doesNotMatch(detail, /env keys|profile /, "and the source line (env keys, profile name) is not");
-
-	// With the sidebar hidden the footer still draws the logo in front of the account, with room after it.
-	const { renderFooter } = await import("../extensions/chassis/footer.ts");
-	state.sidebarShown = () => false;
-	const data = { getGitBranch: () => undefined, getExtensionStatuses: () => new Map() } as any;
-	const foot = renderFooter(state, theme, data, 200).map(strip).join("\n");
-	assert.match(foot, /\u{F0EF} {2}\d{12}/u, "footer: logo, then two spaces (one for its overhang), then the account");
-	delete process.env.AWS_ACCESS_KEY_ID;
-	delete process.env.AWS_REGION;
-});
-
-test("the AWS widget counts down to env key expiry: plain, then a warning, then expired", async () => {
-	fresh();
-	delete process.env.PI_AWS_SESSION_EXPIRATION; // a live session may have one
-	delete process.env.AWS_CREDENTIAL_EXPIRATION;
-	process.env.AWS_ACCESS_KEY_ID = "ASIAIOSFODNN7EXAMPLE";
-	const { default: install } = await import("../extensions/widgets/aws/index.ts");
-	install({ events: { on: () => () => {} }, on: () => {}, getSettings: () => ({}) } as any);
-	const entry = api.getRegistry().widgets.get("aws")!;
-	assert.equal(entry.spec.refreshMs, 30_000, "re-renders by itself so the countdown moves");
-	const state = createState();
-	state.ctx = { cwd: "/w", model: { provider: "p", id: "m" }, getContextUsage: () => undefined, sessionManager: { getSessionName: () => "d", getBranch: () => [] } } as any;
-	const shown = async (ms: number | undefined) => {
-		if (ms === undefined) delete process.env.AWS_CREDENTIAL_EXPIRATION;
-		else process.env.AWS_CREDENTIAL_EXPIRATION = new Date(Date.now() + ms).toISOString();
-		await entry.spec.update!(undefined as any);
-		return renderSidebar(state, theme, 48, 30, "1.0.0").map(strip).join("\n");
-	};
-	assert.doesNotMatch(await shown(undefined), /expire/, "no expiry variable, no countdown");
-	assert.match(await shown(62 * 60_000 + 5_000), /expires in 1h 02m/);
-	assert.match(await shown(5 * 60_000 + 5_000), /AWS\s+\S+ \(5m\)/, "inside ten minutes the row itself carries the time");
-	assert.match(await shown(-1000), /credentials expired/);
-	// A profile session (no keys) counts down from the switcher's time.
-	delete process.env.AWS_ACCESS_KEY_ID;
-	delete process.env.AWS_CREDENTIAL_EXPIRATION;
-	process.env.AWS_PROFILE = "sso";
-	process.env.PI_AWS_SESSION_EXPIRATION = new Date(Date.now() + 42 * 60_000 + 5_000).toISOString();
-	await entry.spec.update!(undefined as any);
-	assert.match(renderSidebar(state, theme, 48, 30, "1.0.0").map(strip).join("\n"), /expires in 42m/);
-	delete process.env.AWS_PROFILE;
-	delete process.env.PI_AWS_SESSION_EXPIRATION;
-});
-
 test("sidebar: markers of different widths leave every row's label in the same column, with the gap after a wide marker", () => {
 	fresh();
 	api.registerWidget(fakePi(), { id: "wide", title: "Wide", icon: "\u{F0EF}", render: () => ({ text: "v1" }) });

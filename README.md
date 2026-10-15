@@ -27,6 +27,7 @@ Using it:
 Building on it:
 
 - [Adding a widget](docs/widgets.md), with or without a dependency on pi-chassis
+- [Status widgets from what you already have](docs/status-widgets.md): recipes for an environment variable, a file, a count, a link and a palette action
 - [Tool rows for your extension's tools](docs/tool-rows.md)
 - [Diff view API](docs/diff-api.md)
 - [Branding](docs/branding.md)
@@ -41,7 +42,7 @@ Working on pi-chassis:
 
 pi-chassis follows [Semantic Versioning](https://semver.org). The public API is:
 
-- the exports in `package.json` (`pi-chassis/client`, `api`, `brand`, `icons`, `provider`, `aws`) and the types they export,
+- the exports in `package.json` (`pi-chassis/client`, `api`, `brand`, `icons`, `provider`) and the types they export,
 - the slash commands, their arguments and the `ctrl+x` and `ctrl+p` keys,
 - the settings it stores in `~/.pi/agent/chassis.json`.
 
