@@ -4,6 +4,8 @@ All notable changes to pi-chassis (published under an earlier name up to 0.3.0) 
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-23
+
 ### Changed
 
 - **Breaking:** the shared `globalThis` keys are now `Symbol.for("pi-chassis/<name>")`: `registry`, `pending`, `pendingToolRows`, `brand`, `icons`, `providers`, `diff`, `original-root` and `original-render`. The plain message types set is now `globalThis[Symbol.for("pi-chassis/plainMessageTypes")]`. A package that talks to chassis through globals must update the keys.
@@ -105,4 +107,5 @@ First public release.
 - Plain and Nerd Font icon sets (`/chassis icons`).
 - Sanitizing of untrusted text (file contents, tool output, git and forge output, session names, widget text) before it reaches the terminal.
 
-[Unreleased]: https://github.com/one24-ai/pi-chassis/commits/main
+[Unreleased]: https://github.com/one24-ai/pi-chassis/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/one24-ai/pi-chassis/releases/tag/v0.7.0
