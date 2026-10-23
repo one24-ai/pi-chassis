@@ -1,0 +1,93 @@
+{
+  "name": "pi-chassis",
+  "version": "0.6.1",
+  "description": "A workbench for pi: an interface, git workflows and a widget platform for everyday engineering. Sidebar and home screen, Build/Plan modes, ctrl+x leader keys and a ctrl+p palette, a git diff view, git commands that draft commit messages and pull requests, and a widget and brand API for other packages.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Zach Koncir <zach@one24.ai>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/one24-ai/pi-chassis.git"
+  },
+  "homepage": "https://github.com/one24-ai/pi-chassis#readme",
+  "bugs": {
+    "url": "https://github.com/one24-ai/pi-chassis/issues"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "keywords": [
+    "pi-package",
+    "pi",
+    "pi-coding-agent",
+    "tui",
+    "git",
+    "coding-agent"
+  ],
+  "exports": {
+    "./client": {
+      "types": "./dist/chassis/client.d.ts",
+      "default": "./dist/chassis/client.js"
+    },
+    "./api": {
+      "types": "./dist/chassis/api.d.ts",
+      "default": "./dist/chassis/api.js"
+    },
+    "./brand": {
+      "types": "./dist/chassis/brand.d.ts",
+      "default": "./dist/chassis/brand.js"
+    },
+    "./icons": {
+      "types": "./dist/chassis/icons.d.ts",
+      "default": "./dist/chassis/icons.js"
+    },
+    "./provider": {
+      "types": "./dist/chassis/provider.d.ts",
+      "default": "./dist/chassis/provider.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/chassis/index.ts",
+      "./extensions/widgets/container/index.ts",
+      "./extensions/widgets/mcp/index.ts",
+      "./extensions/widgets/todo/index.ts",
+      "./extensions/widgets/session-todos/index.ts",
+      "./extensions/widgets/subagents/index.ts",
+      "./extensions/diff/index.ts",
+      "./extensions/git/index.ts"
+    ]
+  },
+  "files": [
+    "dist",
+    "extensions",
+    "scripts/link-pi.mjs",
+    "README.md",
+    "docs",
+    "CHANGELOG.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "build": "node scripts/link-pi.mjs && rm -rf dist && tsc -p tsconfig.build.json",
+    "test": "node scripts/link-pi.mjs && node --experimental-strip-types --no-warnings --test test/*.test.ts",
+    "typecheck": "node scripts/link-pi.mjs && tsc --noEmit",
+    "link-pi": "node scripts/link-pi.mjs",
+    "check": "pnpm test && pnpm typecheck && pnpm build",
+    "prepack": "pnpm build",
+    "release": "node scripts/release.mjs"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=1.2.0 <1.3.0",
+    "@earendil-works/pi-tui": ">=1.2.0 <1.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "typescript": "5.9.3"
+  }
+}
