@@ -6,7 +6,7 @@ All notable changes to pi-chassis (published under an earlier name up to 0.3.0) 
 
 ### Changed
 
-- README: the install commands no longer pin a version or a tag.
+- README: the install commands no longer pin a version or a tag, and the advice to pin is gone.
 
 ## [0.7.0] - 2026-10-23
 

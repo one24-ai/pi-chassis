@@ -12,7 +12,7 @@ pi install git:github.com/one24-ai/pi-chassis   # from git, the main branch
 pi install /path/to/pi-chassis                  # a local checkout
 ```
 
-Pin a version: pi keeps a pinned npm version or git tag until you change it, so an update never arrives by surprise. See the [changelog](CHANGELOG.md) before moving to a new one.
+`pi update` moves to the latest release; the [changelog](CHANGELOG.md) says what changed.
 
 pi-chassis replaces pi's header, footer and editor, so it does not combine with another package that replaces any of them (pi-open-tui is one): keep only one such package in `packages`.
 
