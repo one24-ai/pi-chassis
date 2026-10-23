@@ -7,9 +7,9 @@ Requires pi 1.2 and Node.js 22.19 or later.
 ## Install
 
 ```bash
-pi install npm:pi-chassis@0.4.0                        # from npm, pinned
-pi install git:github.com/one24-ai/pi-chassis@v0.4.0   # from git, pinned to a tag
-pi install /path/to/pi-chassis                         # a local checkout
+pi install npm:pi-chassis                        # from npm, the latest release
+pi install git:github.com/one24-ai/pi-chassis   # from git, the main branch
+pi install /path/to/pi-chassis                  # a local checkout
 ```
 
 Pin a version: pi keeps a pinned npm version or git tag until you change it, so an update never arrives by surprise. See the [changelog](CHANGELOG.md) before moving to a new one.
