@@ -4,6 +4,8 @@ All notable changes to pi-chassis (published under an earlier name up to 0.3.0) 
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-10-23
+
 ### Changed
 
 - README: the install commands no longer pin a version or a tag, and the advice to pin is gone.
@@ -111,5 +113,6 @@ First public release.
 - Plain and Nerd Font icon sets (`/chassis icons`).
 - Sanitizing of untrusted text (file contents, tool output, git and forge output, session names, widget text) before it reaches the terminal.
 
-[Unreleased]: https://github.com/one24-ai/pi-chassis/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/one24-ai/pi-chassis/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/one24-ai/pi-chassis/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/one24-ai/pi-chassis/releases/tag/v0.7.0
