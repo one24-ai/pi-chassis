@@ -4,5 +4,6 @@
 - Stay cross-platform: nothing Windows- or WSL-specific. Rely on what other packages already provide (for example pi-subagents' FleetView) instead of building custom replacements, so the TUI stays portable and shareable.
 - Use pnpm, never npm or yarn. `pnpm check` runs the tests and the type check; run it before saying a change is done.
 - Every change a user could notice gets a line under `## [Unreleased]` in `CHANGELOG.md` in the same commit (Added, Changed, Deprecated, Removed, Fixed, Security). Say if it is breaking.
+- Changes reach `main` only through a pull request on GitHub. Never merge into `main` locally; when asked to merge, merge the PR ("Rebase and merge"). Releases follow RELEASING.md.
 - Versions follow semver as described in the README's Versioning section. Do not edit `version` in package.json by hand; `pnpm release` does it. Releases are cut and pushed by the owner (see RELEASING.md).
 - No em dashes anywhere.
