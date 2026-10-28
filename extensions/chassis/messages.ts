@@ -1,6 +1,6 @@
 /**
  * OpenCode-style transcript styling. pi has no renderer hooks for these, so two prototype patches
- * (pi and extensions share one module instance; verified on pi 1.1.0), both undone on uninstall:
+ * (pi and extensions share one module instance; verified on pi 1.4.0), both undone on uninstall:
  *
  * 1. User messages (UserMessageComponent.render): a ┃ bar in the agent colour, then the message
  *    on the panel background with 1 row of padding above and below and 2 columns on the left,

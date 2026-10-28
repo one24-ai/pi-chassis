@@ -4,7 +4,7 @@
  * Fullscreen mode: pi renders one layout root (a VStack of transcript + input dock). We wrap it in
  * an HStack with the sidebar as a fixed-width right column, which is what OpenCode looks like.
  * There is no extension API for this: it relies on the TUI's `layoutRoot` field and
- * `setLayoutRoot()` (pi-tui ViewportTUI), verified on pi 1.1.0. If either is missing, or pi
+ * `setLayoutRoot()` (pi-tui ViewportTUI), verified on pi 1.4.0. If either is missing, or pi
  * swaps the root back (renderer switch), the guard widget re-wraps it or we fall back.
  *
  * Regular mode has no layout root, so the sidebar is a toggleable overlay instead.
