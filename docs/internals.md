@@ -8,14 +8,14 @@ Below 116 columns the split sidebar hides itself. Context, cost and provider usa
 
 The split relies on `tui.layoutRoot`, `tui.setLayoutRoot()`, the entries of pi-tui's `HStack` and `VStack` (`basis`, `grow`, `shrink`, `minSize`, `visible`) and the `Symbol.for("@earendil-works/pi-tui/layout-node")` method.
 
-Other unsupported hooks, all checked on pi 1.4.0:
+Other unsupported hooks, checked on pi 1.4.0 (seen running unless noted):
 
 - Prompt bars: patches `UserMessageComponent.prototype.render`. The original is restored on `/chassis off` and on shutdown.
-- Tool rows: a renderer resolver (`pi.registerToolRenderer`) draws the built-in tools' calls; pi's own tool definitions, settings and active tool set are not touched. Rows from other extensions are compacted by patching `ToolExecutionComponent.prototype.render` (reads `expanded`, `isPartial`, `result`, `contentBox`, `imageComponents`, `toolDefinition`).
+- Tool rows: a renderer resolver (`pi.registerToolRenderer`) draws the built-in tools' calls; pi's own tool definitions, settings and active tool set are not touched. Rows from other extensions are compacted by patching `ToolExecutionComponent.prototype.render` (reads `expanded`, `isPartial`, `result`, `contentBox`, `imageComponents`, `toolDefinition`, and the row above's `lastMessage` and `isStreaming`). The compact path for tools without their own shell was read in pi's source, not seen running.
 - Finished thinking: patches `AssistantMessageComponent.prototype.render` to drop the hidden-thinking label from settled messages (reads `contentContainer`, `lastMessage`, `isStreaming`, `hideThinkingBlock`, `thinkingVisibilityOverrides`).
-- Extension notices: patches `CustomMessageComponent.prototype.render` (reads `message.customType`).
+- Extension notices: patches `CustomMessageComponent.prototype.render` (reads `message.customType`). Read in pi's source, not seen running.
 - Thinking peek: finds the latest assistant message component in the TUI tree and calls `setHiddenThinkingLabel`.
-- Leader keys that map to slash commands call the editor's `onSubmit`, which pi copies onto chassis's editor.
+- Leader keys that map to slash commands call the editor's `onSubmit`, which pi copies onto chassis's editor (seen with `ctrl+x s`; `ctrl+x r` not run).
 - The prompt reads the editor's `renderedVisibleLineCount`, and the chat container is found by matching component class names (`UserMessageComponent`, `AssistantMessageComponent`, `ToolExecutionComponent`) in the TUI tree.
 
 Several of these read members that are private or protected in pi's types (`Stack.entries`, `ScrollView.child`, `MouseRegion.child`) or match class names, so the type check does not catch a change: re-check them by running pi after each pi update.
