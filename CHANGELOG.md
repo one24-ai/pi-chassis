@@ -4,6 +4,10 @@ All notable changes to pi-chassis (published under an earlier name up to 0.3.0) 
 
 ## [Unreleased]
 
+### Changed
+
+- Supports pi 1.3 and 1.4: the peer dependency range is now `>=1.2.0 <1.5.0`, after checking every unofficial pi hook chassis uses on pi 1.4.0. `docs/internals.md` now lists all of them.
+
 ## [0.7.1] - 2026-10-23
 
 ### Changed
