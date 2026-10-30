@@ -24,16 +24,31 @@ jobs:
       # The tests and type check link the installed pi's packages. Run them against the lowest and the
       # highest pi version in peerDependencies (README, Versioning), one after the other in this one job,
       # so the required "check" status stays a single check.
+      # pi 1.2.0 asks for its own packages as ^1.2.0, so a plain install pulls the newest ones.
+      # Install it in its own folder with pi-tui, pi-ai and pi-agent-core held at 1.2.0, as pi 1.2.0
+      # shipped, and fail if any of them comes out at another version.
       - name: Check against pi 1.2.0 (lowest supported)
         run: |
-          pnpm add --global @earendil-works/pi-coding-agent@1.2.0
+          d="$RUNNER_TEMP/pi-1.2.0"
+          mkdir -p "$d"
+          printf '{"private":true,"dependencies":{"@earendil-works/pi-coding-agent":"1.2.0"}}\n' > "$d/package.json"
+          # Build scripts are not needed to load pi's code; skip them as `pnpm add --global` does.
+          printf 'overrides:\n  "@earendil-works/pi-tui": "1.2.0"\n  "@earendil-works/pi-ai": "1.2.0"\n  "@earendil-works/pi-agent-core": "1.2.0"\nstrictDepBuilds: false\n' > "$d/pnpm-workspace.yaml"
+          (cd "$d" && pnpm install)
+          export PATH="$d/node_modules/.bin:$PATH"
           test "$(pi --version)" = 1.2.0
           pnpm check
+          for p in pi-coding-agent pi-tui pi-ai pi-agent-core; do
+            test "$(node -p "require('./node_modules/@earendil-works/$p/package.json').version")" = 1.2.0
+          done
       - name: Check against pi 1.4.0 (highest supported)
         run: |
           pnpm add --global @earendil-works/pi-coding-agent@1.4.0
           test "$(pi --version)" = 1.4.0
           pnpm check
+          for p in pi-coding-agent pi-tui pi-ai pi-agent-core; do
+            test "$(node -p "require('./node_modules/@earendil-works/$p/package.json').version")" = 1.4.0
+          done
       - name: The packed tarball has the compiled exports
         run: |
           pnpm pack
