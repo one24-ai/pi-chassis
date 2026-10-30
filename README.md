@@ -45,7 +45,7 @@ pi-chassis follows [Semantic Versioning](https://semver.org). The public API is:
 - the slash commands, their arguments and the `ctrl+x` and `ctrl+p` keys,
 - the settings it stores in `~/.pi/agent/chassis.json`.
 
-A change that breaks one of those is a major version, a new feature is a minor version, and a fix is a patch. Before 1.0.0, a breaking change bumps the minor version instead (0.1 to 0.2). Each release supports one pi minor version, declared in `peerDependencies`; supporting a new pi minor is a minor release of pi-chassis. Every change is listed in [CHANGELOG.md](CHANGELOG.md); how a release is cut is in [RELEASING.md](RELEASING.md).
+A change that breaks one of those is a major version, a new feature is a minor version, and a fix is a patch. Before 1.0.0, a breaking change bumps the minor version instead (0.1 to 0.2). Each release declares the pi versions it supports in `peerDependencies`. Adding a pi minor version is a minor release; dropping one is a breaking change. CI tests the lowest and highest supported pi versions. Every change is listed in [CHANGELOG.md](CHANGELOG.md); how a release is cut is in [RELEASING.md](RELEASING.md).
 
 ## Credits
 
