@@ -4,6 +4,8 @@ All notable changes to pi-chassis (published under an earlier name up to 0.3.0) 
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-30
+
 ### Changed
 
 - Allows pi 1.3 and 1.4: the peer dependency range is now `>=1.2.0 <1.5.0`. Checked on pi 1.2.0 and 1.4.0; pi 1.3 was not tested. `docs/internals.md` now lists every unofficial pi hook chassis uses.
@@ -118,6 +120,7 @@ First public release.
 - Plain and Nerd Font icon sets (`/chassis icons`).
 - Sanitizing of untrusted text (file contents, tool output, git and forge output, session names, widget text) before it reaches the terminal.
 
-[Unreleased]: https://github.com/one24-ai/pi-chassis/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/one24-ai/pi-chassis/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/one24-ai/pi-chassis/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/one24-ai/pi-chassis/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/one24-ai/pi-chassis/releases/tag/v0.7.0
