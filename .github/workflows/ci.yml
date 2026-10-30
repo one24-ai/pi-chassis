@@ -21,9 +21,17 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # The tests and type check link the installed pi's packages; install the pi version chassis targets.
-      - run: pnpm add --global @earendil-works/pi-coding-agent@1.2.0
-      - run: pnpm check
+      # The tests and type check link the installed pi's packages. Run them against the lowest and the
+      # highest pi version in peerDependencies (README, Versioning), one after the other in this one job,
+      # so the required "check" status stays a single check.
+      - name: Check against pi 1.2.0 (lowest supported)
+        run: |
+          pnpm add --global @earendil-works/pi-coding-agent@1.2.0
+          pnpm check
+      - name: Check against pi 1.4.0 (highest supported)
+        run: |
+          pnpm add --global @earendil-works/pi-coding-agent@1.4.0
+          pnpm check
       - name: The packed tarball has the compiled exports
         run: |
           pnpm pack

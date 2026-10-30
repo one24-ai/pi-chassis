@@ -24,8 +24,15 @@ jobs:
         with:
           node-version: 24
       - run: pnpm install --frozen-lockfile
-      - run: pnpm add --global @earendil-works/pi-coding-agent@1.2.0
-      - run: pnpm check
+      # The lowest and the highest pi version in peerDependencies, as in ci.yml.
+      - name: Check against pi 1.2.0 (lowest supported)
+        run: |
+          pnpm add --global @earendil-works/pi-coding-agent@1.2.0
+          pnpm check
+      - name: Check against pi 1.4.0 (highest supported)
+        run: |
+          pnpm add --global @earendil-works/pi-coding-agent@1.4.0
+          pnpm check
       - name: Tag matches package.json
         run: |
           test "v$(node -p 'require("./package.json").version')" = "$GITHUB_REF_NAME"
