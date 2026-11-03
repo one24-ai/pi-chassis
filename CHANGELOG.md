@@ -4,6 +4,10 @@ All notable changes to pi-chassis (published under an earlier name up to 0.3.0) 
 
 ## [Unreleased]
 
+### Changed
+
+- Allows pi 1.5: the peer dependency range is now `>=1.2.0 <1.6.0`, and CI tests pi 1.2.0 and 1.5.0. `docs/internals.md` records what was checked on pi 1.5.0.
+
 ## [0.8.0] - 2026-10-30
 
 ### Changed
