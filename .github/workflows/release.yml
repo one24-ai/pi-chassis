@@ -42,13 +42,13 @@ jobs:
           for p in pi-coding-agent pi-tui pi-ai pi-agent-core; do
             test "$(node -p "require('./node_modules/@earendil-works/$p/package.json').version")" = 1.2.0
           done
-      - name: Check against pi 1.4.0 (highest supported)
+      - name: Check against pi 1.5.0 (highest supported)
         run: |
-          pnpm add --global @earendil-works/pi-coding-agent@1.4.0
-          test "$(pi --version)" = 1.4.0
+          pnpm add --global @earendil-works/pi-coding-agent@1.5.0
+          test "$(pi --version)" = 1.5.0
           pnpm check
           for p in pi-coding-agent pi-tui pi-ai pi-agent-core; do
-            test "$(node -p "require('./node_modules/@earendil-works/$p/package.json').version")" = 1.4.0
+            test "$(node -p "require('./node_modules/@earendil-works/$p/package.json').version")" = 1.5.0
           done
       - name: Tag matches package.json
         run: |
