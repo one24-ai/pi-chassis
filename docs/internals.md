@@ -8,7 +8,7 @@ Below 116 columns the split sidebar hides itself. Context, cost and provider usa
 
 The split relies on `tui.layoutRoot`, `tui.setLayoutRoot()`, the entries of pi-tui's `HStack` and `VStack` (`basis`, `grow`, `shrink`, `minSize`, `visible`) and the `Symbol.for("@earendil-works/pi-tui/layout-node")` method.
 
-Other unsupported hooks. On pi 1.4.0 each was seen running unless noted. On pi 1.5.0 every member below was compared with 1.4.0 in pi's source and found unchanged; the sidebar split, prompt bars and tool rows were also seen running:
+Other unsupported hooks. On pi 1.4.0 each was seen running unless noted. On pi 1.5.0 every member below was compared with 1.4.0 in pi's source and found unchanged, except that `ToolExecutionComponent.prototype.render` now applies pending arguments first (`argsPending`), before chassis reads anything; the sidebar split, prompt bars and tool rows were also seen running:
 
 - Prompt bars: patches `UserMessageComponent.prototype.render`. The original is restored on `/chassis off` and on shutdown.
 - Tool rows: a renderer resolver (`pi.registerToolRenderer`) draws the built-in tools' calls; pi's own tool definitions, settings and active tool set are not touched. Rows from other extensions are compacted by patching `ToolExecutionComponent.prototype.render` (reads `expanded`, `isPartial`, `result`, `contentBox`, `imageComponents`, `toolDefinition`, and the row above's `lastMessage` and `isStreaming`). The compact path for tools without their own shell was read in pi's source, not seen running.
